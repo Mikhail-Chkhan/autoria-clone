@@ -1,57 +1,62 @@
 import { Router } from "express";
+import { rateLimit } from "express-rate-limit";
 
-import { authController } from "../controllers/auth.controller";
+import { userController } from "../controllers/user.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
+import { fileMiddleware } from "../middlewares/file.middleware";
+import { userMiddleware } from "../middlewares/user.middleware";
+import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
+// router.use(rateLimit({ windowMs: 2 * 60 * 1000, limit: 5 })); // at the level of the entire user.router
+router.get(
+  "/all",
+  rateLimit({ windowMs: 2 * 60 * 1000, limit: 5 }),
+  authMiddleware.checkAccessToken,
+  userController.getList,
+);
+router.get(
+  "/",
+  authMiddleware.checkAccessToken,
+  userMiddleware.isQueryValid(UserValidator.listQuery),
+  userController.getListWithQueryParams,
+);
 
-router.post(
-  "/sign-up",
-  // userMiddleware.isBodyValid(UserValidator.create),
-  authController.signUp,
+router.get(
+  "/:userId",
+  authMiddleware.checkAccessToken,
+  userMiddleware.checkId,
+  userController.getById,
+);
+router.put(
+  "/:userId",
+  authMiddleware.checkAccessToken,
+  userMiddleware.isBodyValid(UserValidator.create),
+  userMiddleware.checkId,
+  userController.update,
+);
+router.patch(
+  "/me",
+  authMiddleware.checkAccessToken,
+  userMiddleware.isBodyValid(UserValidator.updateForPatch),
+  userController.updateSingleParams,
 );
 router.post(
-  "/sign-in",
-  // userMiddleware.isBodyValid(UserValidator.signIn),
-  authController.signIn,
+  "/logo",
+  authMiddleware.checkAccessToken,
+  fileMiddleware.isLogoValid,
+  userController.uploadLogo,
 );
-// router.post(
-//     "/refresh",
-//     authMiddleware.checkRefreshToken,
-//     authController.refresh,
-// );
-// router.post(
-//     "/change-password",
-//     userMiddleware.isBodyValid(UserValidator.changePassword),
-//     authMiddleware.checkAccessToken,
-//     authController.changePassword,
-// );
-// router.post(
-//     "/reset-password",
-//     userMiddleware.isBodyValid(UserValidator.resetPassword),
-//     userMiddleware.checkUserByEmail,
-//     authController.resetPassword,
-// );
-// router.put(
-//     "/reset-password",
-//     userMiddleware.isBodyValid(UserValidator.setPassword),
-//     authMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
-//     authController.forgotPasswordSet,
-// );
-// router.post("/logout", authMiddleware.checkAccessToken, authController.logout);
-// router.post(
-//     "/logout/all",
-//     authMiddleware.checkAccessToken,
-//     authController.logoutAll,
-// );
-// router.get(
-//     "/verification-request",
-//     authMiddleware.checkAccessToken,
-//     authController.verificationRequest,
-// );
-// router.post(
-//     "/verify",
-//     userMiddleware.isBodyValid(UserValidator.verify),
-//     authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
-//     authController.verify,
-// );
+router.delete(
+  "/remove-logo",
+  authMiddleware.checkAccessToken,
+  userController.removeLogo,
+);
+router.delete(
+  "/:userId",
+  authMiddleware.checkAccessToken,
+  userMiddleware.checkId,
+  userController.remove,
+);
+
 export const userRouter = router;

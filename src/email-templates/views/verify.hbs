@@ -1,0 +1,54 @@
+<!--<table style="width: 100%; padding: 45px 35px; box-sizing: border-box">-->
+<!--    <tr>-->
+<!--        <td style="font-size: 18px; text-align: center;">-->
+<!--            {{name}}, Confirm your email address!-->
+
+<!--        </td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td style="text-align: center;">-->
+<!--            <p style="margin: 17px 0 0;">-->
+<!--                You need submit your email: {{email}}, please click on button.-->
+<!--            </p>-->
+<!--            <a href="{{frontUrl}}/activate?token={{actionToken}}">VERIFY</a>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--            <p style="margin: 17px 0 0;">-->
+<!--                If you did not send a verification request, do not reply to the letter.-->
+<!--            </p>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td style="text-align: center;">-->
+<!--            <button>SUBMIT</button>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--</table>-->
+
+<table width="100%" style="max-width: 600px; margin: 20px auto; border: 1px solid #ddd; border-collapse: collapse; font-family: Arial, sans-serif;">
+    <tr>
+        <td style="background-color: #004f9f; color: white; padding: 20px; text-align: center; font-size: 24px; border-bottom: 1px solid #ddd;">
+            Verify Your Email
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px; text-align: left; color: #333;">
+            <p>Hi,</p>
+            <p>Thank you for registering on <strong>AutoRiaClone</strong>. Please verify your email address to complete your registration.</p>
+            <p>Your verification code is:</p>
+            <p style="font-size: 24px; font-weight: bold; text-align: center; color: #004f9f;">{{verifyCode}}</p>
+            <p>Alternatively, you can verify your email by clicking the button below:</p>
+            <table width="100%" style="text-align: center; margin-top: 20px;">
+                <tr>
+                    <td>
+                        <a href="https://autoriclone.com/verify?email={{email}}&code={{verifyCode}}"
+                        style="display: inline-block; padding: 10px 20px; background-color: #004f9f; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                        Verify Email
+                        </a>
+                    </td>
+                </tr>
+            </table>
+            <p style="margin-top: 20px;">If you did not sign up for AutoRiaClone, please ignore this email.</p>
+        </td>
+    </tr>
+</table>

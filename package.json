@@ -1,5 +1,5 @@
 {
-  "name": "autoria-clone",
+  "name": "march_2024_node",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -10,10 +10,30 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prepare": "husky"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mikhail-Chkhan/march_2024_node.git"
+  },
+  "private": true,
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.664.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "cron": "^3.1.7",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "mongoose": "^8.6.2"
+    "express-fileupload": "^1.5.1",
+    "express-rate-limit": "^7.4.1",
+    "handlebars": "^4.7.8",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.9.0",
+    "mongoose": "^8.6.2",
+    "nodemailer": "^6.9.15",
+    "nodemailer-express-handlebars": "^6.1.2",
+    "swagger": "^0.7.5",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
