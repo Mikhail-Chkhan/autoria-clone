@@ -94,6 +94,10 @@ class AuthService {
       actionToken: token,
     });
     const userPublicData = userPresenter.toPublicResDto(<IUser>user);
+
+    const email = user.email;
+    await verifyCodeRepository.deleteManyByParams({ email });
+
     return { user: userPublicData, tokens };
   }
 
