@@ -6,14 +6,24 @@ import {
   ISignIn,
   IUser,
 } from "../interfaces/user.interface";
+import { IVerifyCodePayload } from "../interfaces/verify-code.interface";
 import { authService } from "../services/auth.service";
 
 class AuthController {
   public async sendVerifyCode(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.query.email as string;
-      const result = await authService.sendVerifyCode(email);
-      res.status(200).json(result);
+      await authService.sendVerifyCode(email);
+      res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async VerifyCode(req: Request, res: Response, next: NextFunction) {
+    try {
+      const dto = req.body as IVerifyCodePayload;
+      await authService.VerifyCode(dto);
+      res.sendStatus(204);
     } catch (e) {
       next(e);
     }

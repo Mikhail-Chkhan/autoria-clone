@@ -14,7 +14,13 @@ router.get(
   authController.sendVerifyCode,
 );
 router.post(
+  "/verify-code",
+  userMiddleware.isBodyValid(UserValidator.VerifyCode),
+  authController.VerifyCode,
+);
+router.post(
   "/sign-up",
+  userMiddleware.checkVerifyCode,
   userMiddleware.isBodyValid(UserValidator.create),
   authController.signUp,
 );

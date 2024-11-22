@@ -9,6 +9,13 @@ class VerifyCodeRepository {
     return await VerifyCode.create(dto);
   }
 
+  public async update(
+    _id: string,
+    dataCode: Partial<IVerifyCode>,
+  ): Promise<void> {
+    await VerifyCode.findByIdAndUpdate(_id, dataCode, { new: false });
+  }
+
   public async findByParams(
     params: Partial<IVerifyCode>,
   ): Promise<IVerifyCode | null> {

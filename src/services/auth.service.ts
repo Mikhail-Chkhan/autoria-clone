@@ -20,26 +20,40 @@ import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
-  public async sendVerifyCode(email: string): Promise<IVerifyCodePayload> {
+  public async sendVerifyCode(email: string): Promise<void> {
     const oldVerifyCode = await verifyCodeRepository.findByParams({ email });
     if (oldVerifyCode) {
       await verifyCodeRepository.deleteManyByParams({ email });
     }
-
     const verifyCode = generateCode.EmailVerificationCode(8);
-    return await verifyCodeRepository.create({
+    await verifyCodeRepository.create({
       verifyCode: verifyCode,
       email: email,
+      isVerified: false,
     });
-    // await emailService.sendMail(email, EmailTypeEnum.VERIFY_EMAIL, {
-    //   email: email,
-    //   verifyCode: verifyCode,
-    // })
     await emailService.sendMail(email, EmailTypeEnum.VERIFY_EMAIL, {
       verifyCode: verifyCode,
       email: email,
     });
   }
+
+  public async VerifyCode(dto: Partial<IVerifyCodePayload>): Promise<void> {
+    const email = dto.email;
+    const actualVerifyCode = await verifyCodeRepository.findByParams({ email });
+    if (!actualVerifyCode) {
+      throw new ApiError(
+        "Verification request was not sent or is out of date",
+        400,
+      );
+    }
+    if (actualVerifyCode.verifyCode != dto.verifyCode) {
+      throw new ApiError("Verify code is incorrect", 400);
+    }
+    await verifyCodeRepository.update(actualVerifyCode._id, {
+      isVerified: true,
+    });
+  }
+
   public async signUp(
     dto: Partial<IUser>,
   ): Promise<{ tokens: ITokenPair; user: Partial<IUser> }> {

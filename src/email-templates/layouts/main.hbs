@@ -8,10 +8,20 @@
     <title>Document</title>
 </head>
 <body>
-    <div>
-        {{>header}}
-        {{{body}}}
-        {{>footer}}
-    </div>
+<div>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0"
+           style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+        <tr>
+            <td align="center">
+                <table width="600" border="0" cellspacing="0" cellpadding="0"
+                       style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                    {{>header}}
+                    {{{body}}}
+                    {{>footer}}
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
 </body>
 </html>

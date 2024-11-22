@@ -6,6 +6,7 @@ const verifyCodeSchema = new Schema(
   {
     email: { type: String, required: true },
     verifyCode: { type: String, required: true },
+    isVerified: { type: Boolean, required: true },
   },
   {
     timestamps: true,

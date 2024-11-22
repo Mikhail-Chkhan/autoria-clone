@@ -20,6 +20,7 @@ export class UserValidator {
     age: this.age.required(),
     email: this.email.required(),
     password: this.password.required(),
+    verifyCode: joi.string().required(),
     phone: this.phone,
   });
 
@@ -53,6 +54,10 @@ export class UserValidator {
   });
   public static verify = joi.object({
     token: joi.string().required(),
+  });
+  public static VerifyCode = joi.object({
+    email: this.email.required(),
+    verifyCode: joi.string().required(),
   });
   public static listQuery = joi.object({
     limit: joi.number().min(1).max(100).default(10),
