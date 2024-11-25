@@ -1,7 +1,9 @@
 import { RoleEnum } from "../enums/role.enum";
-import { ITokenPayload } from "../interfaces/token.interface";
 
-export const MasterTokenPayload: ITokenPayload = {
+export const MasterTokenPayload: {
+  roles: RoleEnum.ADMINISTRATOR[];
+  userId: string;
+} = {
   userId: "super-admin-dev",
-  role: RoleEnum.SUPERADMIN,
+  roles: [RoleEnum.ADMINISTRATOR],
 };

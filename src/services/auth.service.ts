@@ -1,7 +1,9 @@
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { EmailTypeEnum } from "../enums/email-type.enum";
+import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api.error";
 import { generateCode } from "../helpers/generateCode.helper";
+import { roleMergingHelper } from "../helpers/role-merging.helper";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
 import {
   IResetPasswordSet,
@@ -12,15 +14,18 @@ import { IVerifyCodePayload } from "../interfaces/verify-code.interface";
 import { userPresenter } from "../presenters/user.presenter";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { passwordRepository } from "../repositories/password.repository";
+import { roleRepository } from "../repositories/role.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { verifyCodeRepository } from "../repositories/verify-code.repository";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
+import { roleService } from "./role.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
   public async sendVerifyCode(email: string): Promise<void> {
+    await this.isEmailExistOrThrow(email);
     const oldVerifyCode = await verifyCodeRepository.findByParams({ email });
     if (oldVerifyCode) {
       await verifyCodeRepository.deleteManyByParams({ email });
@@ -60,27 +65,41 @@ class AuthService {
     if (!dto.email || !dto.password) {
       throw new ApiError("Email and password required", 400);
     }
-    await this.isEmailExistOrThrow(dto.email);
     const password = await passwordService.hashPassword(dto.password);
     const user: Partial<IUser> = await userRepository.create({
       ...dto,
       password,
     } as IUser);
 
+    const roleDefault = await roleService.create({
+      // await roleService.create({
+      userId: user._id,
+      companyId: null,
+      type: RoleEnum.DEFAULT,
+    });
+    const roleSeller = await roleService.create({
+      // await roleService.create({
+      userId: user._id,
+      companyId: null,
+      type: RoleEnum.SELLER,
+    });
+
+    const { types, permissions } = await roleMergingHelper.roleMerging([
+      roleDefault,
+      roleSeller,
+    ]);
     const tokens = tokenService.generateTokens({
       userId: user._id,
-      role: user.role,
+      roles: types,
+      companyId: null,
+      permissions: permissions,
     });
-    await tokenRepository.create({ ...tokens, _userId: user._id });
-
-    const token = tokenService.generateActionTokens(
-      { userId: user._id, role: user.role },
-      ActionTokenTypeEnum.VERIFY_EMAIL,
-    );
-    await actionTokenRepository.create({
-      type: ActionTokenTypeEnum.VERIFY_EMAIL,
+    await tokenRepository.create({
+      ...tokens,
       _userId: user._id,
-      token,
+      roles: types,
+      companyId: null, //todo
+      permissions: permissions,
     });
 
     await this.checkAndSavePassword({
@@ -90,8 +109,6 @@ class AuthService {
 
     await emailService.sendMail(user.email, EmailTypeEnum.WELCOME, {
       name: user.name,
-      email: user.email,
-      actionToken: token,
     });
     const userPublicData = userPresenter.toPublicResDto(<IUser>user);
 
@@ -116,12 +133,26 @@ class AuthService {
     if (!isPasswordCorrect) {
       throw new ApiError("Invalid credentials", 401);
     }
+    const allRoles = await roleRepository.getByUserId(user._id);
+    if (!allRoles) {
+      throw new ApiError("User without roles", 404);
+    }
+    const { types, permissions } =
+      await roleMergingHelper.roleMerging(allRoles);
 
     const tokens = tokenService.generateTokens({
       userId: user._id,
-      role: user.role,
+      permissions: permissions,
+      roles: types,
+      companyId: null, //todo
     });
-    await tokenRepository.create({ ...tokens, _userId: user._id });
+    await tokenRepository.create({
+      ...tokens,
+      _userId: user._id,
+      roles: types,
+      permissions: permissions,
+      companyId: null,
+    });
     const userPublicData = userPresenter.toPublicResDto(user);
     return { user: userPublicData, tokens };
   }
@@ -130,11 +161,27 @@ class AuthService {
     payload: ITokenPayload,
   ): Promise<ITokenPair> {
     await tokenRepository.deleteByParams({ refreshToken });
+
+    const allRoles = await roleRepository.getByUserId(payload.userId);
+    if (!allRoles) {
+      throw new ApiError("User without roles", 404);
+    }
+    const { types, permissions } =
+      await roleMergingHelper.roleMerging(allRoles);
+
     const tokens = tokenService.generateTokens({
       userId: payload.userId,
-      role: payload.role,
+      permissions: permissions,
+      roles: types,
+      companyId: null, //todo
     });
-    await tokenRepository.create({ ...tokens, _userId: payload.userId });
+    await tokenRepository.create({
+      ...tokens,
+      _userId: payload.userId,
+      roles: types,
+      permissions: permissions,
+      companyId: null,
+    });
     return tokens;
   }
 
@@ -178,14 +225,20 @@ class AuthService {
 
   public async resetPassword(user: IUser) {
     try {
+      const defaultRole = await roleRepository.getByUserIdAndType(
+        user._id,
+        RoleEnum.DEFAULT,
+      );
+      if (!defaultRole) {
+        throw new ApiError("User without default role", 404);
+      }
       const actionToken = tokenService.generateActionTokens(
         {
           userId: user._id,
-          role: user.role,
+          roleId: defaultRole._id,
         },
         ActionTokenTypeEnum.FORGOT_PASSWORD,
       );
-      // console.log("actionToken", actionToken);
       await actionTokenRepository.create({
         type: ActionTokenTypeEnum.FORGOT_PASSWORD,
         _userId: user._id,
@@ -195,6 +248,7 @@ class AuthService {
         token: actionToken,
         name: user.name,
       });
+      console.log("token:", actionToken);
     } catch (e) {
       throw new ApiError(e.message, e.status | 500);
     }
@@ -236,38 +290,6 @@ class AuthService {
       name: user.name,
     });
   }
-  public async verify(jwtPayload: ITokenPayload): Promise<void> {
-    await userRepository.update(jwtPayload.userId, { isVerified: true });
-    await actionTokenRepository.deleteManyByParams({
-      _userId: jwtPayload.userId,
-      type: ActionTokenTypeEnum.VERIFY_EMAIL,
-    });
-  }
-  public async verificationRequest(jwtPayload: ITokenPayload) {
-    const actionToken = tokenService.generateActionTokens(
-      {
-        userId: jwtPayload.userId,
-        role: jwtPayload.role,
-      },
-      ActionTokenTypeEnum.VERIFY_EMAIL,
-    );
-    // console.log("actionToken", actionToken);
-    await actionTokenRepository.create({
-      type: ActionTokenTypeEnum.VERIFY_EMAIL,
-      _userId: jwtPayload.userId,
-      token: actionToken,
-    });
-    const user = await userRepository.getById(jwtPayload.userId);
-    await emailService.sendMail(user.email, EmailTypeEnum.VERIFY_EMAIL, {
-      token: actionToken,
-      name: user.name,
-      email: user.email,
-    });
-  }
-  catch(e) {
-    throw new ApiError(e.message, e.status | 500);
-  }
-
   private async checkAndSavePassword(dto: {
     userId: string;
     password: string;

@@ -11,7 +11,7 @@ const userSchema = new Schema(
     password: { type: String, required: true, select: false },
     phone: { type: String, required: false },
     logo: { type: String, required: false },
-    role: { type: String, enum: RoleEnum, default: RoleEnum.USER },
+    role: { type: String, enum: RoleEnum, default: RoleEnum.DEFAULT },
     isVerified: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
   },

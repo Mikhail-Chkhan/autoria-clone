@@ -10,7 +10,7 @@ const router = Router();
 
 router.get(
   "/send-verify-code",
-  userMiddleware.isQueryValid(UserValidator.checkEmail),
+  userMiddleware.isBodyValid(UserValidator.checkEmail),
   authController.sendVerifyCode,
 );
 router.post(
@@ -47,7 +47,7 @@ router.post(
   authController.resetPassword,
 );
 router.put(
-  "/reset-password",
+  "/set-password",
   userMiddleware.isBodyValid(UserValidator.setPassword),
   authMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
   authController.forgotPasswordSet,
@@ -57,17 +57,6 @@ router.post(
   "/logout/all",
   authMiddleware.checkAccessToken,
   authController.logoutAll,
-);
-router.get(
-  "/verification-request",
-  authMiddleware.checkAccessToken,
-  authController.verificationRequest,
-);
-router.post(
-  "/verify",
-  userMiddleware.isBodyValid(UserValidator.verify),
-  authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
-  authController.verify,
 );
 
 export const authRouter = router;

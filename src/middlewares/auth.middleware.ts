@@ -23,7 +23,6 @@ class AuthMiddleware {
       const accessToken = header.split("Bearer ")[1];
       if (accessToken === configs.JWT_MASTER_SECRET) {
         req.res.locals.jwtPayload = MasterTokenPayload;
-        // Проверяем мастер токен
         next();
         return;
       }

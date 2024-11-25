@@ -41,12 +41,3 @@ export type IUserResponse = Pick<
   | "isVerified"
   | "createdAt"
 >;
-
-// export interface IUserListResponse {
-//   data: IUserResponse[];
-//   total: number;
-//   orderBy: string;
-//   order: string;
-//   limit: number;
-//   page: number;
-// }

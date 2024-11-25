@@ -4,7 +4,11 @@ import { configs } from "../config/configs";
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.error";
-import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
+import {
+  ITokenActionPayload,
+  ITokenPair,
+  ITokenPayload,
+} from "../interfaces/token.interface";
 
 class TokenService {
   public generateTokens(payload: ITokenPayload): ITokenPair {
@@ -38,10 +42,6 @@ class TokenService {
         case ActionTokenTypeEnum.FORGOT_PASSWORD:
           secret = configs.ACTION_FORGOT_PASSWORD_SECRET;
           break;
-
-        case ActionTokenTypeEnum.VERIFY_EMAIL:
-          secret = configs.ACTION_VERIFY_EMAIL_SECRET;
-          break;
       }
       return jsonwebtoken.verify(token, secret) as ITokenPayload; //  возвращает ITokenPayload если токен валидный
     } catch (e) {
@@ -51,7 +51,7 @@ class TokenService {
   }
 
   public generateActionTokens(
-    payload: ITokenPayload, // {userId: string;role: RoleEnum;}
+    payload: ITokenActionPayload, // {userId: string;role: RoleEnum;}
     tokenType: ActionTokenTypeEnum,
   ): string {
     let secret: string;
@@ -62,12 +62,6 @@ class TokenService {
         secret = configs.ACTION_FORGOT_PASSWORD_SECRET;
         expiresIn = configs.ACTION_FORGOT_PASSWORD_EXPIRATION;
         break;
-
-      case ActionTokenTypeEnum.VERIFY_EMAIL:
-        secret = configs.ACTION_VERIFY_EMAIL_SECRET;
-        expiresIn = configs.ACTION_VERIFY_EMAIL_EXPIRATION;
-        break;
-
       default:
         throw new ApiError("Invalid token type", 400);
     }

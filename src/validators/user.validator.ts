@@ -52,9 +52,6 @@ export class UserValidator {
     password: this.password.required(),
     token: joi.string().required(),
   });
-  public static verify = joi.object({
-    token: joi.string().required(),
-  });
   public static VerifyCode = joi.object({
     email: this.email.required(),
     verifyCode: joi.string().required(),
