@@ -16,6 +16,9 @@ class RoleRepository {
   public async getByUserId(userId: string): Promise<IRole> {
     return await Role.findOne({ userId });
   }
+  public async removeByUserId(userId: string): Promise<void> {
+    await Role.deleteMany({ userId });
+  }
 }
 
 export const roleRepository = new RoleRepository();

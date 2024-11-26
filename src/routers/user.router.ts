@@ -19,7 +19,7 @@ router.patch(
   "/me",
   authMiddleware.checkAccessToken,
   userMiddleware.isBodyValid(UserValidator.updateForPatch),
-  userController.updateSingleParams,
+  userController.updateSelectParams,
 );
 router.post(
   "/logo",
@@ -36,7 +36,7 @@ router.post(
   "/change-email",
   authMiddleware.checkAccessToken,
   userMiddleware.isBodyValid(UserValidator.changeEmail),
-  userController.updateSingleParams,
+  userController.updateSelectParams,
   //todo не работает из-за проверки на уникальность при верификации. реализовать через экшенТокен, как ранее в верификации было
 );
 // router.delete("/remove", authMiddleware.checkAccessToken, userController.deactivated,);

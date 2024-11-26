@@ -10,7 +10,7 @@ export interface IRole {
   updatedAt?: Date;
 }
 
-export interface IRoleMarge {
-  types: RoleEnum[];
-  permissions: string[];
+export interface IRoleChange {
+  userId: string;
+  role: RoleEnum;
 }

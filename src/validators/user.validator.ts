@@ -1,7 +1,9 @@
 import joi from "joi";
 
 import { regexConstant } from "../constants/regex.constant";
+import { AccountTypeEnum } from "../enums/account-type.enum";
 import { OrderEnum } from "../enums/order.enum";
+import { RoleEnum } from "../enums/role.enum";
 import { UserListOrderByEnum } from "../enums/user-list-order-by.enum";
 
 export class UserValidator {
@@ -39,6 +41,18 @@ export class UserValidator {
     regionId: joi.number().integer().min(1).max(26).required(),
     city: joi.string().trim().lowercase().min(3).max(30),
   });
+
+  public static updateAdmin = joi.object({
+    name: this.name,
+    phone: this.phone,
+    email: this.email,
+    regionId: joi.number().integer().min(1).max(26),
+    city: joi.string().trim().lowercase().min(3).max(30),
+    accountType: joi.string().valid(...Object.values(AccountTypeEnum)),
+    companyId: joi.string(),
+    isBlocked: joi.boolean(),
+  });
+
   public static updateForPatch = joi.object({
     name: this.name,
     phone: this.phone,
@@ -84,6 +98,13 @@ export class UserValidator {
       .string()
       .valid(...Object.values(UserListOrderByEnum))
       .default(UserListOrderByEnum.CREATED),
+  });
+  public static changeRole = joi.object({
+    userId: joi.string().max(100).required(),
+    role: joi
+      .string()
+      .valid(...Object.values(RoleEnum))
+      .required(),
   });
 }
 

@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { carController } from "../controllers/car.controller";
+import { CarPermissions } from "../enums/permissions.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { carMiddleware } from "../middlewares/car.middleware";
 import { CarValidator } from "../validators/car.validator";
@@ -8,13 +9,12 @@ import { CarValidator } from "../validators/car.validator";
 const router = Router();
 router.get(
   "/",
-  authMiddleware.checkAccessToken,
   // carMiddleware.isQueryValid(CarValidator.listQuery),
   carController.getListWithQueryParams,
 );
 router.post(
   "/create",
-  // authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken,
   carMiddleware.isBodyValid(CarValidator.create),
   carController.create,
 );
@@ -38,13 +38,13 @@ router.get(
 );
 router.delete(
   "/:carId",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken([CarPermissions.DELETE_CAR]),
   // carMiddleware.isBodyValid(CarrValidator.create),
   carController.removeCar,
 );
 router.patch(
   "/deactivate/:carId",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken([CarPermissions.DEACTIVATE_CAR]),
   // carMiddleware.isBodyValid(CarrValidator.create),
   carController.deactivate,
 );

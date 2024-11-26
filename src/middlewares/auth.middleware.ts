@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
 import { configs } from "../config/configs";
-import { MasterTokenPayload } from "../constants/masterToken";
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
+import {
+  AdminPermissions,
+  CarPermissions,
+  UserPermissions,
+} from "../enums/permissions.enum";
 import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.error";
 import { actionTokenRepository } from "../repositories/action-token.repository";
@@ -10,37 +14,46 @@ import { tokenRepository } from "../repositories/token.repository";
 import { tokenService } from "../services/token.service";
 
 class AuthMiddleware {
-  public async checkAccessToken(
-    req: Request,
-    res: Response,
-    next: NextFunction,
+  public checkAccessToken(
+    requiredPermissions: (
+      | AdminPermissions
+      | UserPermissions
+      | CarPermissions
+    )[] = [],
   ) {
-    try {
-      const header = req.headers.authorization;
-      if (!header) {
-        throw new ApiError("Token is not provided", 401);
+    return async (req: Request, res: Response, next: NextFunction) => {
+      {
+        try {
+          const header = req.headers.authorization;
+          if (!header) {
+            throw new ApiError("Token is not provided", 401);
+          }
+          const accessToken = header.split("Bearer ")[1];
+          if (!accessToken) {
+            throw new ApiError("Token format is invalid", 401);
+          }
+          const payload = tokenService.verifyToken(
+            accessToken,
+            TokenTypeEnum.ACCESS,
+          );
+          const pair = await tokenRepository.findByParams({ accessToken });
+          if (!pair) {
+            throw new ApiError("Token is not valid", 401);
+          }
+          const userPermissions = payload.permissions || [];
+          const hasRequiredPermissions = requiredPermissions.every((perm) =>
+            userPermissions.includes(perm),
+          );
+          if (!hasRequiredPermissions) {
+            throw new ApiError("You do not have the required permissions", 403);
+          }
+          req.res.locals.jwtPayload = payload;
+          next();
+        } catch (e) {
+          next(e);
+        }
       }
-      const accessToken = header.split("Bearer ")[1];
-      if (accessToken === configs.JWT_MASTER_SECRET) {
-        req.res.locals.jwtPayload = MasterTokenPayload;
-        next();
-        return;
-      }
-      const payload = tokenService.verifyToken(
-        // payload = {userId: string;role: RoleEnum;}
-        accessToken,
-        TokenTypeEnum.ACCESS,
-      );
-      const pair = await tokenRepository.findByParams({ accessToken });
-      // поиск токена accessToken в БД
-      if (!pair) {
-        throw new ApiError("Token is not valid", 401);
-      }
-      req.res.locals.jwtPayload = payload;
-      next();
-    } catch (e) {
-      next(e);
-    }
+    };
   }
 
   public async checkRefreshToken(
@@ -89,6 +102,20 @@ class AuthMiddleware {
         next(e);
       }
     };
+  }
+  public async CheckSecretKey(req: Request, res: Response, next: NextFunction) {
+    try {
+      const secretKey = req.body.secretKey;
+      console.log(secretKey);
+      if (!secretKey) {
+        throw new ApiError("Secret Key is required", 400);
+      }
+      if (secretKey !== configs.JWT_SECRET_KEY) {
+        throw new ApiError("Secret Key is incorrect", 400);
+      }
+    } catch (e) {
+      next(e);
+    }
   }
 }
 

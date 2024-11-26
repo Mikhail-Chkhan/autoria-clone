@@ -4,7 +4,7 @@ import { RoleEnum } from "../enums/role.enum";
 import { TypeRegEnum } from "../enums/type-reg.enum";
 import { ApiError } from "../errors/api.error";
 import { generateCode } from "../helpers/generateCode.helper";
-import { IRole } from "../interfaces/role.interface";
+import { IRole, IRoleChange } from "../interfaces/role.interface";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
 import {
   IResetPasswordSet,
@@ -23,6 +23,7 @@ import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
 import { roleService } from "./role.service";
 import { tokenService } from "./token.service";
+import { userService } from "./user.service";
 
 class AuthService {
   public async sendVerifyCode(email: string): Promise<void> {
@@ -270,6 +271,37 @@ class AuthService {
     await emailService.sendMail(user.email, EmailTypeEnum.LOGOUT, {
       name: user.name,
     });
+  }
+
+  public async changeRole(dto: IRoleChange): Promise<{ message: string }> {
+    try {
+      await userService.getUser(dto.userId);
+      // if (!user) {
+      //   throw new ApiError("User not found", 404);
+      // }
+      await roleRepository.removeByUserId(dto.userId);
+      await tokenRepository.deleteByParams({ _userId: dto.userId });
+      const role = await roleService.create({
+        userId: dto.userId,
+        companyId: null,
+        type: dto.role,
+      });
+      const tokens = tokenService.generateTokens({
+        userId: role.userId,
+        role: role.type,
+        companyId: null,
+        permissions: role.permissions,
+      });
+      await tokenRepository.create({
+        ...tokens,
+        _userId: role.userId,
+        role: role.type,
+        permissions: role.permissions,
+      });
+      return { message: `User role update successful. New roleId ${role._id}` };
+    } catch (e) {
+      throw new ApiError(e.message, e.status || 500);
+    }
   }
 
   public async logoutAll(jwtPayload: ITokenPayload): Promise<void> {

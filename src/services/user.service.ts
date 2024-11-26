@@ -1,4 +1,5 @@
 import { UploadedFile } from "express-fileupload";
+import mongoose from "mongoose";
 
 import { FileItemTypeEnum } from "../enums/file-item-type.enum";
 import { ApiError } from "../errors/api.error";
@@ -25,6 +26,9 @@ class UserService {
     return userPresenter.toListResDto(entities, total, query);
   }
   public async getUser(userId: string): Promise<IUser> {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new ApiError("Invalid user ID format", 400);
+    }
     const user = await userRepository.getById(userId);
     if (!user) {
       throw new ApiError("User with this id not found", 404);
@@ -50,7 +54,7 @@ class UserService {
     return await userRepository.update(userId, dtoWithoutPassword);
   }
 
-  public async updateSingleParams(
+  public async updateSelectParams(
     userId: string,
     updateData: Partial<IUser>,
   ): Promise<{ message: string }> {
@@ -61,6 +65,13 @@ class UserService {
   }
 
   public async remove(userId: string): Promise<{ message: string }> {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new ApiError("Invalid user ID format", 400);
+    }
+    const user = await userRepository.getById(userId);
+    if (!user) {
+      throw new ApiError("User with this id not found", 404);
+    }
     return await userRepository.remove(userId);
   }
   public async uploadLogo(

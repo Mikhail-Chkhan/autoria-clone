@@ -9,8 +9,30 @@ import { userRepository } from "../repositories/user.repository";
 import { verifyCodeRepository } from "../repositories/verify-code.repository";
 
 class UserMiddleware {
-  public checkId(req: Request, res: Response, next: NextFunction) {
+  public checkIdAndToken(req: Request, res: Response, next: NextFunction) {
     //todo нужен ли этот роут?
+    try {
+      const userKey = req.params.userId;
+      const payloadToken = req.res.locals.jwtPayload;
+      if (!isObjectIdOrHexString(userKey)) {
+        throw new ApiError(`Invalid ID ${userKey}`, 400);
+      }
+      if (
+        payloadToken.userId != userKey &&
+        payloadToken.userId != MasterTokenPayload.userId
+      ) {
+        throw new ApiError(
+          "Access denied. You do not have permission to view this data.",
+          403,
+        );
+      }
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public checkId(req: Request, res: Response, next: NextFunction) {
     try {
       const userKey = req.params.userId;
       const payloadToken = req.res.locals.jwtPayload;

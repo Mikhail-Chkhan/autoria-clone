@@ -7,13 +7,13 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  isBlocked: boolean;
   phone: string;
   logo?: string;
   regionId: number;
   city?: string;
   accountType: AccountTypeEnum;
   companyId?: string;
+  isBlocked: boolean;
   secretKey?: string;
   verifyCode?: string;
   createdAt?: Date;

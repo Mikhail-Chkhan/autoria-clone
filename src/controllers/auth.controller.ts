@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { TypeRegEnum } from "../enums/type-reg.enum";
+import { IRoleChange } from "../interfaces/role.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
   IResetPasswordSet,
@@ -124,6 +125,16 @@ class AuthController {
 
       await authService.logoutAll(jwtPayload);
       res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async changeRole(req: Request, res: Response, next: NextFunction) {
+    try {
+      const roleChange = req.body as IRoleChange;
+      const result = await authService.changeRole(roleChange);
+      return res.status(200).json({ message: result.message, status: 200 });
     } catch (e) {
       next(e);
     }
