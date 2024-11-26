@@ -13,8 +13,8 @@ class RoleRepository {
     return await Role.findOne({ userId, type });
   }
 
-  public async getByUserId(userId: string): Promise<IRole[]> {
-    return await Role.find({ userId });
+  public async getByUserId(userId: string): Promise<IRole> {
+    return await Role.findOne({ userId });
   }
 }
 

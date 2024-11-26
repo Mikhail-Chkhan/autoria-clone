@@ -25,33 +25,17 @@ class UserService {
     return userPresenter.toListResDto(entities, total, query);
   }
   public async getUser(userId: string): Promise<IUser> {
-    return await userRepository.getById(userId);
+    const user = await userRepository.getById(userId);
+    if (!user) {
+      throw new ApiError("User with this id not found", 404);
+    }
+    return user;
   }
 
   public async update(
     userId: string,
     updateData: IUser,
   ): Promise<{ message: string }> {
-    const errors = [
-      { condition: !updateData.password, message: "Password is required" },
-      { condition: !updateData.name, message: "Name is required" },
-      { condition: !updateData.email, message: "Email is required" },
-      {
-        condition:
-          updateData.password.length < 8 || updateData.password.length > 15,
-        message: "Password length must be between 8 and 15 characters",
-      },
-      {
-        condition: !/\d/.test(updateData.password),
-        message: "Password must contain at least one number",
-      },
-    ];
-
-    for (const { condition, message } of errors) {
-      if (condition) {
-        throw new ApiError(`User data is invalid: ${message}`, 400);
-      }
-    }
     const user = await userRepository.getByIdWithPassword(userId);
     const isMatched = await passwordService.comparePassword(
       updateData.password,

@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { rateLimit } from "express-rate-limit";
 
 import { userController } from "../controllers/user.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
@@ -10,31 +9,12 @@ import { UserValidator } from "../validators/user.validator";
 const router = Router();
 // router.use(rateLimit({ windowMs: 2 * 60 * 1000, limit: 5 })); // at the level of the entire user.router
 router.get(
-  "/all",
-  rateLimit({ windowMs: 2 * 60 * 1000, limit: 5 }),
+  "/me",
   authMiddleware.checkAccessToken,
-  userController.getList,
+  userController.getPrivatById,
 );
-router.get(
-  "/",
-  authMiddleware.checkAccessToken,
-  userMiddleware.isQueryValid(UserValidator.listQuery),
-  userController.getListWithQueryParams,
-);
+router.get("/:userId", userController.getPublicById);
 
-router.get(
-  "/:userId",
-  authMiddleware.checkAccessToken,
-  userMiddleware.checkId,
-  userController.getById,
-);
-router.put(
-  "/:userId",
-  authMiddleware.checkAccessToken,
-  userMiddleware.isBodyValid(UserValidator.create),
-  userMiddleware.checkId,
-  userController.update,
-);
 router.patch(
   "/me",
   authMiddleware.checkAccessToken,
@@ -52,11 +32,13 @@ router.delete(
   authMiddleware.checkAccessToken,
   userController.removeLogo,
 );
-router.delete(
-  "/:userId",
+router.post(
+  "/change-email",
   authMiddleware.checkAccessToken,
-  userMiddleware.checkId,
-  userController.remove,
+  userMiddleware.isBodyValid(UserValidator.changeEmail),
+  userController.updateSingleParams,
+  //todo не работает из-за проверки на уникальность при верификации. реализовать через экшенТокен, как ранее в верификации было
 );
-
+// router.delete("/remove", authMiddleware.checkAccessToken, userController.deactivated,);
+//todo add deactivated user then update "isDeleted:true"
 export const userRouter = router;

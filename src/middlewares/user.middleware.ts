@@ -10,6 +10,7 @@ import { verifyCodeRepository } from "../repositories/verify-code.repository";
 
 class UserMiddleware {
   public checkId(req: Request, res: Response, next: NextFunction) {
+    //todo нужен ли этот роут?
     try {
       const userKey = req.params.userId;
       const payloadToken = req.res.locals.jwtPayload;

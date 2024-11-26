@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { TypeRegEnum } from "../enums/type-reg.enum";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
   IResetPasswordSet,
@@ -31,7 +32,16 @@ class AuthController {
   public async signUp(req: Request, res: Response, next: NextFunction) {
     try {
       const dto = req.body as IUser;
-      const result = await authService.signUp(dto);
+      const result = await authService.signUp(dto, TypeRegEnum.USER);
+      res.status(201).json(result);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async createAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const dto = req.body as IUser;
+      const result = await authService.signUp(dto, TypeRegEnum.ADMIN);
       res.status(201).json(result);
     } catch (e) {
       next(e);

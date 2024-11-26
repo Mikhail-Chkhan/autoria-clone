@@ -8,6 +8,7 @@ import swaggerDocument from "../docs/swagger.json";
 import { configs } from "./config/configs";
 import { cronRunner } from "./crons";
 import { ApiError } from "./errors/api.error";
+import { adminRouter } from "./routers/admin.router";
 import { authRouter } from "./routers/auth.router";
 import { carRouter } from "./routers/car.router";
 import { userRouter } from "./routers/user.router";
@@ -42,6 +43,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 // app.use("/roles", rolRouter);
+app.use("/admin", adminRouter);
 app.use("/cars", carRouter);
 // app.use("/company", companyRouter);
 // app.use("/catalog", catalogRouter);

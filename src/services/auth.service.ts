@@ -1,9 +1,10 @@
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
+import { TypeRegEnum } from "../enums/type-reg.enum";
 import { ApiError } from "../errors/api.error";
 import { generateCode } from "../helpers/generateCode.helper";
-import { roleMergingHelper } from "../helpers/role-merging.helper";
+import { IRole } from "../interfaces/role.interface";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
 import {
   IResetPasswordSet,
@@ -61,61 +62,56 @@ class AuthService {
 
   public async signUp(
     dto: Partial<IUser>,
+    typeReg: TypeRegEnum,
   ): Promise<{ tokens: ITokenPair; user: Partial<IUser> }> {
-    if (!dto.email || !dto.password) {
-      throw new ApiError("Email and password required", 400);
+    try {
+      const password = await passwordService.hashPassword(dto.password);
+      const user: Partial<IUser> = await userRepository.create({
+        ...dto,
+        password,
+      } as IUser);
+      let role: IRole;
+      switch (typeReg) {
+        case TypeRegEnum.USER:
+          role = await roleService.create({
+            userId: user._id,
+            companyId: null,
+            type: RoleEnum.SELLER,
+          });
+          break;
+        case TypeRegEnum.ADMIN:
+          role = await roleService.create({
+            userId: user._id,
+            companyId: null,
+            type: RoleEnum.ADMINISTRATOR,
+          });
+          break;
+      }
+      const tokens = tokenService.generateTokens({
+        userId: user._id,
+        role: role.type,
+        companyId: null,
+        permissions: role.permissions,
+      });
+      await tokenRepository.create({
+        ...tokens,
+        _userId: user._id,
+        role: role.type,
+        permissions: role.permissions,
+      });
+      await this.checkAndSavePassword({
+        userId: user._id,
+        password: dto.password,
+      });
+      await emailService.sendMail(user.email, EmailTypeEnum.WELCOME, {
+        name: user.name,
+      });
+      const userPublicData = userPresenter.toPrivatDto(user as IUser);
+      await verifyCodeRepository.deleteManyByParams({ email: user.email });
+      return { user: userPublicData, tokens };
+    } catch (e) {
+      throw new ApiError(e.message, e.status | 500);
     }
-    const password = await passwordService.hashPassword(dto.password);
-    const user: Partial<IUser> = await userRepository.create({
-      ...dto,
-      password,
-    } as IUser);
-
-    const roleDefault = await roleService.create({
-      // await roleService.create({
-      userId: user._id,
-      companyId: null,
-      type: RoleEnum.DEFAULT,
-    });
-    const roleSeller = await roleService.create({
-      // await roleService.create({
-      userId: user._id,
-      companyId: null,
-      type: RoleEnum.SELLER,
-    });
-
-    const { types, permissions } = await roleMergingHelper.roleMerging([
-      roleDefault,
-      roleSeller,
-    ]);
-    const tokens = tokenService.generateTokens({
-      userId: user._id,
-      roles: types,
-      companyId: null,
-      permissions: permissions,
-    });
-    await tokenRepository.create({
-      ...tokens,
-      _userId: user._id,
-      roles: types,
-      companyId: null, //todo
-      permissions: permissions,
-    });
-
-    await this.checkAndSavePassword({
-      userId: user._id,
-      password: dto.password,
-    });
-
-    await emailService.sendMail(user.email, EmailTypeEnum.WELCOME, {
-      name: user.name,
-    });
-    const userPublicData = userPresenter.toPublicResDto(<IUser>user);
-
-    const email = user.email;
-    await verifyCodeRepository.deleteManyByParams({ email });
-
-    return { user: userPublicData, tokens };
   }
 
   public async signIn(
@@ -125,7 +121,6 @@ class AuthService {
     if (!user) {
       throw new ApiError("User not found", 404);
     }
-
     const isPasswordCorrect = await passwordService.comparePassword(
       dto.password,
       user.password,
@@ -133,29 +128,26 @@ class AuthService {
     if (!isPasswordCorrect) {
       throw new ApiError("Invalid credentials", 401);
     }
-    const allRoles = await roleRepository.getByUserId(user._id);
-    if (!allRoles) {
+    const role = await roleRepository.getByUserId(user._id);
+    if (!role) {
       throw new ApiError("User without roles", 404);
     }
-    const { types, permissions } =
-      await roleMergingHelper.roleMerging(allRoles);
-
     const tokens = tokenService.generateTokens({
       userId: user._id,
-      permissions: permissions,
-      roles: types,
-      companyId: null, //todo
+      permissions: role.permissions,
+      role: role.type,
+      companyId: null,
     });
     await tokenRepository.create({
       ...tokens,
       _userId: user._id,
-      roles: types,
-      permissions: permissions,
-      companyId: null,
+      role: role.type,
+      permissions: role.permissions,
     });
-    const userPublicData = userPresenter.toPublicResDto(user);
+    const userPublicData = userPresenter.toPrivatDto(user);
     return { user: userPublicData, tokens };
   }
+
   public async refresh(
     refreshToken: string,
     payload: ITokenPayload,
@@ -166,21 +158,21 @@ class AuthService {
     if (!allRoles) {
       throw new ApiError("User without roles", 404);
     }
-    const { types, permissions } =
-      await roleMergingHelper.roleMerging(allRoles);
-
+    const role = await roleRepository.getByUserId(payload.userId);
+    if (!role) {
+      throw new ApiError("User without roles", 404);
+    }
     const tokens = tokenService.generateTokens({
       userId: payload.userId,
-      permissions: permissions,
-      roles: types,
-      companyId: null, //todo
+      permissions: role.permissions,
+      role: role.type,
+      companyId: null,
     });
     await tokenRepository.create({
       ...tokens,
       _userId: payload.userId,
-      roles: types,
-      permissions: permissions,
-      companyId: null,
+      role: role.type,
+      permissions: role.permissions,
     });
     return tokens;
   }
@@ -225,17 +217,14 @@ class AuthService {
 
   public async resetPassword(user: IUser) {
     try {
-      const defaultRole = await roleRepository.getByUserIdAndType(
-        user._id,
-        RoleEnum.DEFAULT,
-      );
-      if (!defaultRole) {
-        throw new ApiError("User without default role", 404);
+      const role = await roleRepository.getByUserId(user._id);
+      if (!role) {
+        throw new ApiError("User without roles", 404);
       }
       const actionToken = tokenService.generateActionTokens(
         {
           userId: user._id,
-          roleId: defaultRole._id,
+          roleId: role._id,
         },
         ActionTokenTypeEnum.FORGOT_PASSWORD,
       );

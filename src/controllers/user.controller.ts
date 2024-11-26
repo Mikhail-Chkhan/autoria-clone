@@ -42,7 +42,6 @@ class UserController {
           );
         }
         const query = req.query as unknown as IUserListQuery;
-        console.log(query);
         const users = await userService.getListWithQueryParams(query);
         res.json(users);
       } catch (e) {
@@ -50,8 +49,17 @@ class UserController {
       }
     }
   }
-
-  public async getById(req: Request, res: Response, next: NextFunction) {
+  public async getPrivatById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.res.locals.jwtPayload.userId;
+      const user = await userService.getUser(userId);
+      const result = userPresenter.toPrivatDto(user);
+      res.json(result);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async getPublicById(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.params.userId;
       const user = await userService.getUser(userId);

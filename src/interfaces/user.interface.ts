@@ -1,5 +1,5 @@
+import { AccountTypeEnum } from "../enums/account-type.enum";
 import { OrderEnum } from "../enums/order.enum";
-import { RoleEnum } from "../enums/role.enum";
 import { UserListOrderByEnum } from "../enums/user-list-order-by.enum";
 
 export interface IUser {
@@ -7,13 +7,15 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  age: number;
-  role: RoleEnum;
-  isVerified: boolean;
-  verifyCode: string;
-  isDeleted: boolean;
-  phone?: string;
+  isBlocked: boolean;
+  phone: string;
   logo?: string;
+  regionId: number;
+  city?: string;
+  accountType: AccountTypeEnum;
+  companyId?: string;
+  secretKey?: string;
+  verifyCode?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -34,10 +36,12 @@ export type IUserResponse = Pick<
   | "_id"
   | "name"
   | "email"
-  | "age"
-  | "role"
+  | "phone"
   | "logo"
-  | "isDeleted"
-  | "isVerified"
+  | "regionId"
+  | "city"
+  | "accountType"
+  | "companyId"
+  | "isBlocked"
   | "createdAt"
 >;

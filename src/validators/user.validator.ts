@@ -6,7 +6,6 @@ import { UserListOrderByEnum } from "../enums/user-list-order-by.enum";
 
 export class UserValidator {
   private static name = joi.string().min(3).max(20).trim();
-  private static age = joi.number().min(18).max(120);
   private static email = joi
     .string()
     .lowercase()
@@ -17,22 +16,34 @@ export class UserValidator {
 
   public static create = joi.object({
     name: this.name.required(),
-    age: this.age.required(),
     email: this.email.required(),
     password: this.password.required(),
     verifyCode: joi.string().required(),
-    phone: this.phone,
+    phone: this.phone.required(),
+    regionId: joi.number().integer().min(1).max(26).required(),
+    city: joi.string().trim().lowercase().min(3).max(30),
+  });
+  public static createAdmin = joi.object({
+    name: this.name.required(),
+    email: this.email.required(),
+    password: this.password.required(),
+    secretKey: joi.string().required(),
+    phone: this.phone.required(),
+    regionId: joi.number().integer().min(1).max(26).required(),
+    city: joi.string().trim().lowercase().min(3).max(30),
   });
 
   public static update = joi.object({
-    name: this.name,
-    age: this.age,
-    phone: this.phone,
+    name: this.name.required(),
+    phone: this.phone.required(),
+    regionId: joi.number().integer().min(1).max(26).required(),
+    city: joi.string().trim().lowercase().min(3).max(30),
   });
   public static updateForPatch = joi.object({
-    name: this.name.optional(),
-    age: this.age.optional(),
-    phone: this.phone.optional(),
+    name: this.name,
+    phone: this.phone,
+    regionId: joi.number().integer().min(1).max(26),
+    city: joi.string().trim().lowercase().min(3).max(30),
   });
 
   public static signIn = joi.object({
@@ -43,6 +54,11 @@ export class UserValidator {
   public static changePassword = joi.object({
     oldPassword: this.password.required(),
     newPassword: this.password.required(),
+  });
+
+  public static changeEmail = joi.object({
+    newEmail: this.email.required(),
+    verifyCode: joi.string().required(),
   });
 
   public static checkEmail = joi.object({

@@ -5,7 +5,7 @@ export interface IToken {
   accessToken: string;
   refreshToken: string;
   _userId: string;
-  roles: string[];
+  role: RoleEnum;
   permissions: string[];
   companyId: string;
 }
@@ -13,7 +13,7 @@ export interface IToken {
 export interface ITokenPayload {
   userId: string;
   companyId: string;
-  roles: RoleEnum[];
+  role: RoleEnum;
   permissions: string[];
 }
 

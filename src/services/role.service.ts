@@ -21,7 +21,7 @@ export class RoleService {
       permissions,
     });
   }
-  public async getAllRolesByUserId(userId: string): Promise<IRole[]> {
+  public async getAllRolesByUserId(userId: string): Promise<IRole> {
     return await roleRepository.getByUserId(userId);
   }
 }
