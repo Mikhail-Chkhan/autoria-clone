@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { UploadedFile } from "express-fileupload";
 
 import { MasterTokenPayload } from "../constants/masterToken";
+import { AccountTypeEnum } from "../enums/account-type.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPayload } from "../interfaces/token.interface";
 import { IUserListQuery } from "../interfaces/user.interface";
@@ -143,6 +144,21 @@ class UserController {
     } catch (e) {
       next(e);
     }
+  }
+
+  public changeAccType(type: AccountTypeEnum) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        await userService.getUser(req.params.userId);
+        const result = await userService.updateSelectParams(req.params.userId, {
+          accountType: type,
+        });
+        return res.status(200).json({ message: result.message, status: 200 });
+        next();
+      } catch (e) {
+        next(e);
+      }
+    };
   }
 }
 

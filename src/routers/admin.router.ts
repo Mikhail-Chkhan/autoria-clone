@@ -3,6 +3,7 @@ import { rateLimit } from "express-rate-limit";
 
 import { authController } from "../controllers/auth.controller";
 import { userController } from "../controllers/user.controller";
+import { AccountTypeEnum } from "../enums/account-type.enum";
 import { AdminPermissions } from "../enums/permissions.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { secretKeyRateLimiter } from "../middlewares/rateLimit.middleware";
@@ -29,7 +30,16 @@ router.put(
   userMiddleware.isBodyValid(UserValidator.updateAdmin),
   userController.updateForAdmin,
 );
-
+router.patch(
+  "/change-acc-type-premium/:userId",
+  authMiddleware.checkAccessToken(AdminPermissions.UPDATE_USER),
+  userController.changeAccType(AccountTypeEnum.PREMIUM),
+);
+router.patch(
+  "/change-acc-type-basic/:userId",
+  authMiddleware.checkAccessToken(AdminPermissions.UPDATE_USER),
+  userController.changeAccType(AccountTypeEnum.BASIC),
+);
 router.get(
   "/get-user/:userId",
   authMiddleware.checkAccessToken(AdminPermissions.GET_USER),
