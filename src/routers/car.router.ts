@@ -38,13 +38,13 @@ router.get(
 );
 router.delete(
   "/:carId",
-  authMiddleware.checkAccessToken([CarPermissions.DELETE_CAR]),
+  authMiddleware.checkAccessToken(CarPermissions.DELETE_CAR),
   // carMiddleware.isBodyValid(CarrValidator.create),
   carController.removeCar,
 );
 router.patch(
   "/deactivate/:carId",
-  authMiddleware.checkAccessToken([CarPermissions.DEACTIVATE_CAR]),
+  authMiddleware.checkAccessToken(CarPermissions.DEACTIVATE_CAR),
   // carMiddleware.isBodyValid(CarrValidator.create),
   carController.deactivate,
 );

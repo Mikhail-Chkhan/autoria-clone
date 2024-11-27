@@ -19,38 +19,38 @@ router.post(
 );
 router.post(
   "/change-role",
-  authMiddleware.checkAccessToken([AdminPermissions.CHANGE_ROLE]),
+  authMiddleware.checkAccessToken(AdminPermissions.CHANGE_ROLE),
   userMiddleware.isBodyValid(UserValidator.changeRole),
   authController.changeRole,
 );
 router.put(
   "/update-user/:userId",
-  authMiddleware.checkAccessToken([AdminPermissions.UPDATE_USER]),
+  authMiddleware.checkAccessToken(AdminPermissions.UPDATE_USER),
   userMiddleware.isBodyValid(UserValidator.updateAdmin),
   userController.updateForAdmin,
 );
 
 router.get(
   "/get-user/:userId",
-  authMiddleware.checkAccessToken([AdminPermissions.GET_USER]),
+  authMiddleware.checkAccessToken(AdminPermissions.GET_USER),
   userController.getForAdmin,
 );
 router.delete(
   "/remove-user/:userId",
-  authMiddleware.checkAccessToken([AdminPermissions.REMOVE_USER]),
+  authMiddleware.checkAccessToken(AdminPermissions.REMOVE_USER),
   userController.remove,
 );
 
 router.get(
   "/all",
   rateLimit({ windowMs: 2 * 60 * 1000, limit: 5 }),
-  authMiddleware.checkAccessToken([AdminPermissions.VIEW_ALL_USERS]),
+  authMiddleware.checkAccessToken(AdminPermissions.VIEW_ALL_USERS),
   userController.getList,
 );
 
 router.get(
   "/user-list",
-  authMiddleware.checkAccessToken([AdminPermissions.VIEW_USER_LIST]),
+  authMiddleware.checkAccessToken(AdminPermissions.VIEW_USER_LIST),
   userMiddleware.isQueryValid(UserValidator.listQuery),
   userController.getListWithQueryParams,
 );
