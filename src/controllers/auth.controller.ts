@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { TypeRegEnum } from "../enums/type-reg.enum";
+import { TypeVerifyEnum } from "../enums/type-verify.enum";
 import { IRoleChange } from "../interfaces/role.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
@@ -10,12 +11,26 @@ import {
 } from "../interfaces/user.interface";
 import { IVerifyCodePayload } from "../interfaces/verify-code.interface";
 import { authService } from "../services/auth.service";
+import { roleService } from "../services/role.service";
 
 class AuthController {
   public async sendVerifyCode(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.body.email as string;
-      await authService.sendVerifyCode(email);
+      await authService.sendVerifyCode(email, TypeVerifyEnum.REGISTRATION);
+      res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async sendVerifyCodeForChangeEmail(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const email = req.body.email as string;
+      await authService.sendVerifyCode(email, TypeVerifyEnum.CHANGE_EMAIL);
       res.sendStatus(204);
     } catch (e) {
       next(e);
@@ -134,6 +149,23 @@ class AuthController {
     try {
       const roleChange = req.body as IRoleChange;
       const result = await authService.changeRole(roleChange);
+      return res.status(200).json({ message: result.message, status: 200 });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async updateRoleTemplate(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+      const result = await roleService.updateRole(
+        jwtPayload.userId,
+        jwtPayload.role,
+      );
       return res.status(200).json({ message: result.message, status: 200 });
     } catch (e) {
       next(e);

@@ -2,6 +2,7 @@ import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { TypeRegEnum } from "../enums/type-reg.enum";
+import { TypeVerifyEnum } from "../enums/type-verify.enum";
 import { ApiError } from "../errors/api.error";
 import { generateCode } from "../helpers/generateCode.helper";
 import { IRole, IRoleChange } from "../interfaces/role.interface";
@@ -26,8 +27,13 @@ import { tokenService } from "./token.service";
 import { userService } from "./user.service";
 
 class AuthService {
-  public async sendVerifyCode(email: string): Promise<void> {
-    await this.isEmailExistOrThrow(email);
+  public async sendVerifyCode(
+    email: string,
+    type: TypeVerifyEnum,
+  ): Promise<void> {
+    if (type == TypeVerifyEnum.REGISTRATION) {
+      await this.isEmailExistOrThrow(email);
+    }
     const oldVerifyCode = await verifyCodeRepository.findByParams({ email });
     if (oldVerifyCode) {
       await verifyCodeRepository.deleteManyByParams({ email });

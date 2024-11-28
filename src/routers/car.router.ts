@@ -14,7 +14,7 @@ router.get(
 );
 router.post(
   "/create",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken(CarPermissions.CREATE_CAR),
   carMiddleware.isBodyValid(CarValidator.create),
   carController.create,
 );

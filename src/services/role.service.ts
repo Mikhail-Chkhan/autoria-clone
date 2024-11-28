@@ -1,4 +1,5 @@
 import { roleTemplates } from "../config/roleTemplates";
+import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api.error";
 import { IRole } from "../interfaces/role.interface";
 import { roleRepository } from "../repositories/role.repository";
@@ -20,6 +21,20 @@ export class RoleService {
       ...dto,
       permissions,
     });
+  }
+
+  public async updateRole(
+    userId: string,
+    typeRole: RoleEnum,
+  ): Promise<{ message: string }> {
+    try {
+      const role = await roleRepository.getByUserId(userId);
+      const newPermission = (await roleTemplates[typeRole]) as Array<string>;
+      await roleRepository.update(role._id, { permissions: newPermission });
+      return { message: `User role ${role._id} update  successful` };
+    } catch (e) {
+      throw new ApiError(e.message, e.status || 500);
+    }
   }
   public async getAllRolesByUserId(userId: string): Promise<IRole> {
     return await roleRepository.getByUserId(userId);

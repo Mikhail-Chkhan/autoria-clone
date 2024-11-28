@@ -71,7 +71,7 @@ export class UserValidator {
   });
 
   public static changeEmail = joi.object({
-    newEmail: this.email.required(),
+    email: this.email.required(),
     verifyCode: joi.string().required(),
   });
 

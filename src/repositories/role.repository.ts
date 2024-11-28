@@ -5,7 +5,12 @@ class RoleRepository {
   public async create(role: Partial<IRole>): Promise<IRole> {
     return await Role.create(role);
   }
-
+  public async update(
+    roleId: string,
+    updateData: Partial<IRole>,
+  ): Promise<IRole> {
+    return await Role.findByIdAndUpdate(roleId, updateData);
+  }
   public async getByUserIdAndType(
     userId: string,
     type: string,

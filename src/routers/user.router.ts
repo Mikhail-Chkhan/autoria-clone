@@ -1,44 +1,51 @@
 import { Router } from "express";
 
+import { authController } from "../controllers/auth.controller";
 import { userController } from "../controllers/user.controller";
+import { UserPermissions } from "../enums/permissions.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { fileMiddleware } from "../middlewares/file.middleware";
 import { userMiddleware } from "../middlewares/user.middleware";
 import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
-// router.use(rateLimit({ windowMs: 2 * 60 * 1000, limit: 5 })); // at the level of the entire user.router
 router.get(
   "/me",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken(UserPermissions.VIEW_OWN_PROFILE),
   userController.getPrivatById,
 );
 router.get("/:userId", userController.getPublicById);
 
 router.patch(
   "/me",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken(UserPermissions.UPDATE_OWN_PROFILE),
   userMiddleware.isBodyValid(UserValidator.updateForPatch),
   userController.updateSelectParams,
 );
 router.post(
   "/logo",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken(UserPermissions.UPLOAD_LOGO),
   fileMiddleware.isLogoValid,
   userController.uploadLogo,
 );
 router.delete(
   "/remove-logo",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken(UserPermissions.UPLOAD_LOGO),
   userController.removeLogo,
 );
 router.post(
+  "/change-email-verify",
+  authMiddleware.checkAccessToken(UserPermissions.CHANGE_EMAIL),
+  userMiddleware.isBodyValid(UserValidator.checkEmail),
+  authController.sendVerifyCodeForChangeEmail,
+);
+router.post(
   "/change-email",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken(UserPermissions.CHANGE_EMAIL),
   userMiddleware.isBodyValid(UserValidator.changeEmail),
   userController.updateSelectParams,
-  //todo не работает из-за проверки на уникальность при верификации. реализовать через экшенТокен, как ранее в верификации было
 );
-// router.delete("/remove", authMiddleware.checkAccessToken, userController.deactivated,);
+
+// router.delete("/remove", authMiddleware.checkAccessToken(UserPermissions.DELETE_ACCOUNT), userController.deactivated,);
 //todo add deactivated user then update "isDeleted:true"
 export const userRouter = router;

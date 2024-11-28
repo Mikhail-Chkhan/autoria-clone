@@ -28,27 +28,26 @@ export class CarValidator {
   private static companyId = joi.string().trim();
   private static isActive = joi.boolean();
 
-  public static create = joi
-    .object({
-      brandId: this.brandId.required(),
-      model: this.model.required(),
-      year: this.year.required(),
-      vin: this.vin.default(null),
-      fuelType: this.fuelType.default(null),
-      type: this.type.default(null),
-      engineCapacity: this.engineCapacity.default(null),
-      stateNumber: this.stateNumber.default(null),
-      distance: this.distance.default(null),
-      new: this.new.required(),
-      image: this.image.default([]),
-      advertType: this.advertType.required(),
-      regionID: this.regionID.required(),
-      city: this.city.required(),
-      ownerId: this.ownerId.optional(),
-      companyId: this.companyId.optional(),
-      isActive: this.isActive.default(true),
-    })
-    .xor("ownerId", "companyId");
+  public static create = joi.object({
+    brandId: this.brandId.required(),
+    model: this.model.required(),
+    year: this.year.required(),
+    vin: this.vin.default(null),
+    fuelType: this.fuelType.default(null),
+    type: this.type.default(null),
+    engineCapacity: this.engineCapacity.default(null),
+    stateNumber: this.stateNumber.default(null),
+    distance: this.distance.default(null),
+    new: this.new.required(),
+    image: this.image.default([]),
+    advertType: this.advertType.required(),
+    regionID: this.regionID.required(),
+    city: this.city.required(),
+    ownerId: this.ownerId.optional(),
+    companyId: this.companyId.optional(),
+    isActive: this.isActive.default(true),
+  });
+  // .xor("ownerId", "companyId");//для взаимосключения полей, пока не нужно
 
   // public static listQuery = joi.object({
   //   limit: joi.number().min(1).max(100).default(10),

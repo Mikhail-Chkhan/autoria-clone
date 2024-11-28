@@ -7,6 +7,7 @@ class CarController {
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const dto = req.body as ICar;
+      dto.ownerId = req.res.locals.jwtPayload.userId;
       const result = await carService.create(dto);
       res.status(201).json(result);
     } catch (e) {

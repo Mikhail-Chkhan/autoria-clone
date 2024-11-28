@@ -12,6 +12,13 @@ class CarRepository {
   ): Promise<ICar | null> {
     return await Car.findOne({ vin, isActive });
   }
+
+  public async getCountActiveAdvert(
+    ownerId: string,
+    isActive: boolean,
+  ): Promise<number> {
+    return await Car.countDocuments({ ownerId, isActive });
+  }
   // public async update(
   //   userId: string,
   //   dataUser: Partial<IUser>,
