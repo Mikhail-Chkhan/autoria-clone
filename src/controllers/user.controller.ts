@@ -124,7 +124,6 @@ class UserController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
       const logo = req.files.logo as UploadedFile;
-
       await userService.uploadLogo(jwtPayload.userId, logo);
       const user = await userService.getUser(jwtPayload.userId);
       const result = userPresenter.toPublicResDto(user);

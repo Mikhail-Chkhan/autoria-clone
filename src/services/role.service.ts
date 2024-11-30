@@ -36,8 +36,5 @@ export class RoleService {
       throw new ApiError(e.message, e.status || 500);
     }
   }
-  public async getAllRolesByUserId(userId: string): Promise<IRole> {
-    return await roleRepository.getByUserId(userId);
-  }
 }
 export const roleService = new RoleService();

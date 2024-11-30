@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { logoConfigs } from "../config/file-configs";
+import { imgCarConfigs, logoConfigs } from "../config/file-configs";
 import { ApiError } from "../errors/api.error";
 
 class FileMiddleware {
@@ -15,6 +15,24 @@ class FileMiddleware {
       }
       if (size > logoConfigs.MAX_SIZE) {
         throw new ApiError(`Max size logo ${logoConfigs.MAX_SIZE} `, 400);
+      }
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public isImgCarValid(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (Array.isArray(req.files.img)) {
+        throw new ApiError("Image must be single file", 400);
+      }
+      const { mimetype, size } = req.files.img;
+      if (!imgCarConfigs.MIMETYPE.includes(mimetype)) {
+        throw new ApiError("The image must be type png or jpeg", 400);
+      }
+      if (size > imgCarConfigs.MAX_SIZE) {
+        throw new ApiError(`Max size image ${imgCarConfigs.MAX_SIZE} `, 400);
       }
       next();
     } catch (e) {

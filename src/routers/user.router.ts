@@ -46,6 +46,4 @@ router.post(
   userController.updateSelectParams,
 );
 
-// router.delete("/remove", authMiddleware.checkAccessToken(UserPermissions.DELETE_ACCOUNT), userController.deactivated,);
-//todo add deactivated user then update "isDeleted:true"
 export const userRouter = router;

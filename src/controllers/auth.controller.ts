@@ -171,6 +171,16 @@ class AuthController {
       next(e);
     }
   }
+
+  public async deactivate(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.userId;
+      const result = await authService.deactivate(userId);
+      return res.status(200).json({ message: result.message, status: 200 });
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export const authController = new AuthController();

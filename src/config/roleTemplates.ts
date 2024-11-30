@@ -26,7 +26,8 @@ export const roleTemplates = {
     UserPermissions.DELETE_ACCOUNT,
 
     CarPermissions.CREATE_CAR,
-    CarPermissions.DELETE_CAR,
+    CarPermissions.UPDATE_CAR,
+    CarPermissions.GET_CARS,
     CarPermissions.DEACTIVATE_CAR,
     CarPermissions.VIEW_CATALOG_BRAND,
   ],
@@ -41,6 +42,9 @@ export const roleTemplates = {
     UserPermissions.DELETE_ACCOUNT,
 
     CarPermissions.CREATE_CAR,
+    CarPermissions.UPDATE_CAR,
+    CarPermissions.ADMIN_UPDATE_CAR,
+    CarPermissions.GET_CARS,
     CarPermissions.DELETE_CAR,
     CarPermissions.DEACTIVATE_CAR,
     CarPermissions.VIEW_CATALOG_BRAND,
@@ -50,6 +54,7 @@ export const roleTemplates = {
     AdminPermissions.REMOVE_USER,
     AdminPermissions.VIEW_ALL_USERS,
     AdminPermissions.VIEW_USER_LIST,
+    AdminPermissions.BLOCKED_USER,
   ],
   administrator: [
     UserPermissions.VIEW_OWN_PROFILE,
@@ -62,6 +67,9 @@ export const roleTemplates = {
     UserPermissions.DELETE_ACCOUNT,
 
     CarPermissions.CREATE_CAR,
+    CarPermissions.UPDATE_CAR,
+    CarPermissions.ADMIN_UPDATE_CAR,
+    CarPermissions.GET_CARS,
     CarPermissions.DELETE_CAR,
     CarPermissions.DEACTIVATE_CAR,
     CarPermissions.VIEW_CATALOG_BRAND,
@@ -72,5 +80,6 @@ export const roleTemplates = {
     AdminPermissions.REMOVE_USER,
     AdminPermissions.VIEW_ALL_USERS,
     AdminPermissions.VIEW_USER_LIST,
+    AdminPermissions.BLOCKED_USER,
   ],
 };

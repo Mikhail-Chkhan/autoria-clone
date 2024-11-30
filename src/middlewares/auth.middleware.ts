@@ -21,7 +21,6 @@ class AuthMiddleware {
       {
         try {
           const header = req.headers.authorization;
-          console.log("permission:", permission);
           if (!header) {
             throw new ApiError("Token is not provided", 401);
           }
@@ -33,12 +32,10 @@ class AuthMiddleware {
             accessToken,
             TokenTypeEnum.ACCESS,
           );
-          console.log("payload:", payload);
           const pair = await tokenRepository.findByParams({ accessToken });
           if (!pair) {
             throw new ApiError("Token is not valid", 401);
           }
-          console.log("pair:", pair);
           if (!payload.permissions.includes(permission)) {
             throw new ApiError("You do not have the required permissions", 403);
           }

@@ -1,16 +1,30 @@
 import { Router } from "express";
-import { rateLimit } from "express-rate-limit";
 
 import { authController } from "../controllers/auth.controller";
+import { carController } from "../controllers/car.controller";
 import { userController } from "../controllers/user.controller";
 import { AccountTypeEnum } from "../enums/account-type.enum";
-import { AdminPermissions } from "../enums/permissions.enum";
+import { AdminPermissions, CarPermissions } from "../enums/permissions.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
+import { carMiddleware } from "../middlewares/car.middleware";
+import { fileMiddleware } from "../middlewares/file.middleware";
 import { secretKeyRateLimiter } from "../middlewares/rateLimit.middleware";
 import { userMiddleware } from "../middlewares/user.middleware";
+import { CarValidator } from "../validators/car.validator";
 import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
+router.get(
+  "/get-user/:userId",
+  authMiddleware.checkAccessToken(AdminPermissions.GET_USER),
+  userController.getForAdmin,
+);
+router.get(
+  "/user-list",
+  authMiddleware.checkAccessToken(AdminPermissions.VIEW_USER_LIST),
+  userMiddleware.isQueryValid(UserValidator.listQuery),
+  userController.getListWithQueryParams,
+);
 router.post(
   "/create-admin-user",
   secretKeyRateLimiter,
@@ -18,14 +32,8 @@ router.post(
   userMiddleware.isBodyValid(UserValidator.createAdmin),
   authController.createAdmin,
 );
-router.post(
-  "/change-role",
-  authMiddleware.checkAccessToken(AdminPermissions.CHANGE_ROLE),
-  userMiddleware.isBodyValid(UserValidator.changeRole),
-  authController.changeRole,
-);
 router.put(
-  "/update-user/:userId",
+  "/user/:userId",
   authMiddleware.checkAccessToken(AdminPermissions.UPDATE_USER),
   userMiddleware.isBodyValid(UserValidator.updateAdmin),
   userController.updateForAdmin,
@@ -40,29 +48,44 @@ router.patch(
   authMiddleware.checkAccessToken(AdminPermissions.UPDATE_USER),
   userController.changeAccType(AccountTypeEnum.BASIC),
 );
-router.get(
-  "/get-user/:userId",
-  authMiddleware.checkAccessToken(AdminPermissions.GET_USER),
-  userController.getForAdmin,
-);
 router.delete(
   "/remove-user/:userId",
   authMiddleware.checkAccessToken(AdminPermissions.REMOVE_USER),
   userController.remove,
 );
-
-router.get(
-  "/all",
-  rateLimit({ windowMs: 2 * 60 * 1000, limit: 5 }),
-  authMiddleware.checkAccessToken(AdminPermissions.VIEW_ALL_USERS),
-  userController.getList,
+router.post(
+  "/change-role",
+  authMiddleware.checkAccessToken(AdminPermissions.CHANGE_ROLE),
+  userMiddleware.isBodyValid(UserValidator.changeRole),
+  authController.changeRole,
 );
+router.patch(
+  "/blocked-user/:userId",
+  authMiddleware.checkAccessToken(AdminPermissions.BLOCKED_USER),
+  authController.deactivate,
+);
+router.patch(
+  "/car/:carId",
+  authMiddleware.checkAccessToken(CarPermissions.ADMIN_UPDATE_CAR),
+  carMiddleware.isBodyValid(CarValidator.updateForAdmin),
+  carController.update,
+);
+router.delete(
+  "/car/:carId",
+  authMiddleware.checkAccessToken(CarPermissions.DELETE_CAR),
+  carController.delete,
+);
+router.post(
+  "/upload-car-img/:carId",
+  authMiddleware.checkAccessToken(CarPermissions.ADMIN_UPDATE_CAR),
 
-router.get(
-  "/user-list",
-  authMiddleware.checkAccessToken(AdminPermissions.VIEW_USER_LIST),
-  userMiddleware.isQueryValid(UserValidator.listQuery),
-  userController.getListWithQueryParams,
+  fileMiddleware.isImgCarValid,
+  carController.uploadImg,
+);
+router.delete(
+  "/remove-car-img/:imgPath(*)",
+  authMiddleware.checkAccessToken(CarPermissions.ADMIN_UPDATE_CAR),
+  carController.removeImg,
 );
 
 export const adminRouter = router;

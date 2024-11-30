@@ -344,6 +344,19 @@ class AuthService {
       throw new ApiError(e.message, e.status || 500);
     }
   }
+
+  public async deactivate(userId: string): Promise<{ message: string }> {
+    try {
+      const role = RoleEnum.DEFAULT;
+      await this.changeRole({ userId: userId, role: role });
+      await userRepository.update(userId, { isBlocked: true });
+      return {
+        message: `User with id "${userId}" has been successfully blocked`,
+      };
+    } catch (e) {
+      throw new ApiError(e.message, e.status || 500);
+    }
+  }
 }
 
 export const authService = new AuthService();

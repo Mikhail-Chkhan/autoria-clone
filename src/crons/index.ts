@@ -1,3 +1,4 @@
+import { currencyOldCronJob } from "./currncy.cron";
 import { oldVisitorCronJob } from "./old-visitor";
 import { removeOldPasswordsCronJob } from "./remove-old-passwords.cron";
 import { removeOldTokensCronJob } from "./remove-old-tokens.cron";
@@ -10,4 +11,5 @@ export const cronRunner = () => {
   removeOldPasswordsCronJob.start();
   oldVisitorCronJob.start();
   removeOldVerifyCodeCronJob.start();
+  currencyOldCronJob.start();
 };

@@ -34,4 +34,6 @@ export const configs = {
   AWS_S3_REGION: process.env.AWS_S3_REGION,
   AWS_S3_ACL: process.env.AWS_S3_ACL as ObjectCannedACL,
   AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT,
+
+  API_URL_PRIVAT_BANK: process.env.API_URL_PRIVAT_BANK,
 };

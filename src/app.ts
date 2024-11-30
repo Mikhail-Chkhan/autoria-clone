@@ -11,6 +11,7 @@ import { ApiError } from "./errors/api.error";
 import { adminRouter } from "./routers/admin.router";
 import { authRouter } from "./routers/auth.router";
 import { carRouter } from "./routers/car.router";
+import { catalogRouter } from "./routers/catalog.router";
 import { userRouter } from "./routers/user.router";
 
 const app = express();
@@ -32,7 +33,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
-// app.use(rateLimit({ windowMs: 2 * 60 * 1000, limit: 5 }));  //  at the level of the entire app test
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -42,11 +42,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
-// app.use("/roles", rolRouter);
 app.use("/admin", adminRouter);
 app.use("/cars", carRouter);
 // app.use("/company", companyRouter);
-// app.use("/catalog", catalogRouter);
+app.use("/catalog", catalogRouter);
 
 app.use(
   "*",
