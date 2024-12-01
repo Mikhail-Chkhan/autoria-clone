@@ -25,8 +25,6 @@ class CarPresenter {
       isCarSold: entity.isCarSold,
       isActive: entity.isActive,
       createdAt: entity.createdAt,
-
-      // avatar: entity.logo ? `${configs.AWS_S3_ENDPOINT}/${entity.logo}` : null,
     };
   }
 

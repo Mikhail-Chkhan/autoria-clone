@@ -61,11 +61,11 @@ class CurrencyHelper {
     }
   }
 
-  public convert(
+  public async convert(
     price: number,
     currency: CurrencyEnum,
     rates: IRateCovert,
-  ): ICurrencyResponse[] {
+  ): Promise<ICurrencyResponse[]> {
     const convertedRates: ICurrencyResponse[] = [];
     switch (currency) {
       case CurrencyEnum.UAH: {
@@ -140,6 +140,7 @@ class CurrencyHelper {
       price: parseFloat(rate.price.toFixed(2)),
       rate: parseFloat(rate.rate.toFixed(6)),
     }));
+    console.log("roundConvertPrice:", roundConvertPrice);
     return roundConvertPrice;
   }
 }

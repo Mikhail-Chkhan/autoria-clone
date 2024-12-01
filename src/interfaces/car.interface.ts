@@ -30,6 +30,12 @@ export interface ICar {
   companyId?: string;
   isCarSold: boolean;
   isActive: boolean;
+  views?: {
+    total: number;
+    daily: number;
+    weekly: number;
+    monthly: number;
+  };
   createdAt?: Date;
   updatedAt?: Date;
 }

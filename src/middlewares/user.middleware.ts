@@ -1,59 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { ObjectSchema, ValidationError } from "joi";
-import { isObjectIdOrHexString } from "mongoose";
 
-import { MasterTokenPayload } from "../constants/masterToken";
+import { AccountTypeEnum } from "../enums/account-type.enum";
 import { ApiError } from "../errors/api.error";
 import { IUser } from "../interfaces/user.interface";
 import { userRepository } from "../repositories/user.repository";
 import { verifyCodeRepository } from "../repositories/verify-code.repository";
 
 class UserMiddleware {
-  public checkIdAndToken(req: Request, res: Response, next: NextFunction) {
-    //todo нужен ли этот роут?
-    try {
-      const userKey = req.params.userId;
-      const payloadToken = req.res.locals.jwtPayload;
-      if (!isObjectIdOrHexString(userKey)) {
-        throw new ApiError(`Invalid ID ${userKey}`, 400);
-      }
-      if (
-        payloadToken.userId != userKey &&
-        payloadToken.userId != MasterTokenPayload.userId
-      ) {
-        throw new ApiError(
-          "Access denied. You do not have permission to view this data.",
-          403,
-        );
-      }
-      next();
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  public checkId(req: Request, res: Response, next: NextFunction) {
-    try {
-      const userKey = req.params.userId;
-      const payloadToken = req.res.locals.jwtPayload;
-      if (!isObjectIdOrHexString(userKey)) {
-        throw new ApiError(`Invalid ID ${userKey}`, 400);
-      }
-      if (
-        payloadToken.userId != userKey &&
-        payloadToken.userId != MasterTokenPayload.userId
-      ) {
-        throw new ApiError(
-          "Access denied. You do not have permission to view this data.",
-          403,
-        );
-      }
-      next();
-    } catch (e) {
-      next(e);
-    }
-  }
-
   public async checkVerifyCode(
     req: Request,
     res: Response,
@@ -81,7 +35,7 @@ class UserMiddleware {
   public isBodyValid(validator: ObjectSchema) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
-        req.body = await validator.validateAsync(req.body); // проверяем и обновляем модифицированные данные
+        req.body = await validator.validateAsync(req.body);
         next();
       } catch (e) {
         if (e instanceof ValidationError) {
@@ -107,6 +61,22 @@ class UserMiddleware {
         next(new ApiError("User not found", 404));
       }
       res.locals.user = user;
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async checkPremium(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.res.locals.jwtPayload.userId;
+      const user = await userRepository.getById(userId);
+      if (user.accountType == AccountTypeEnum.BASIC) {
+        throw new ApiError(
+          "User with a basic account. Reports aren't available",
+          402,
+        );
+      }
       next();
     } catch (e) {
       next(e);

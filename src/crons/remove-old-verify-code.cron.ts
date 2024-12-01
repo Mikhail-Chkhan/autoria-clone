@@ -20,7 +20,3 @@ const handler = async () => {
 };
 
 export const removeOldVerifyCodeCronJob = new CronJob("0 15 * * * *", handler);
-// export const removeOldVerifyCodeCronJob = new CronJob(
-//   "*/20 * * * * *",
-//   handler,
-// );

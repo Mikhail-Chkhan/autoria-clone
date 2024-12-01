@@ -8,7 +8,7 @@ class CarMiddleware {
   public isBodyValid(validator: ObjectSchema) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
-        req.body = await validator.validateAsync(req.body); // проверяем и обновляем модифицированные данные
+        req.body = await validator.validateAsync(req.body);
         next();
       } catch (e) {
         if (e instanceof ValidationError) {
@@ -53,7 +53,7 @@ class CarMiddleware {
         if (!imgPath) {
           throw new ApiError("Invalid image path", 400);
         }
-        const carId = imgPath.split("/")[1]; // Константа "/" для разделения
+        const carId = imgPath.split("/")[1];
         if (!carId) {
           throw new ApiError("Car ID not found in image path", 400);
         }
@@ -64,7 +64,6 @@ class CarMiddleware {
             403,
           );
         }
-
         next();
       } catch (e) {
         next(e);

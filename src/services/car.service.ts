@@ -19,18 +19,21 @@ export class CarService {
     query: ICarListQuery,
   ): Promise<IPaginatorResponse<ICarResponse>> {
     const [cars, total] = await carRepository.getListWithQueryParams(query);
-
     const rates = await currencyHelper.readFallbackRates();
-    const entities = cars.map((car) => {
-      car.allPrice = currencyHelper.convert(
-        car.defaultPrice,
-        car.defaultCurrency,
-        rates,
-      );
-      return car;
-    });
+    const entities = await Promise.all(
+      cars.map(async (car) => {
+        car.allPrice = await currencyHelper.convert(
+          car.defaultPrice,
+          car.defaultCurrency,
+          rates,
+        );
+        return car;
+      }),
+    );
+
     return carPresenter.toListResDto(entities, total, query);
   }
+
   public async getUser(userId: string): Promise<IUser> {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       throw new ApiError("Invalid user ID format", 400);
@@ -57,10 +60,15 @@ export class CarService {
     if (user.accountType == AccountTypeEnum.BASIC && countActiveAdvert >= 1) {
       throw new ApiError(
         "User with a basic account can create only 1 advert",
-        400,
+        402,
       );
     }
-    // todo добавить отправку письма об успешном создании обяъвления
+    const rates = await currencyHelper.readFallbackRates();
+    dto.allPrice = await currencyHelper.convert(
+      dto.defaultPrice,
+      dto.defaultCurrency,
+      rates,
+    );
     return await carRepository.create(dto);
   }
   public async getCar(carId: string): Promise<ICar> {
@@ -72,7 +80,6 @@ export class CarService {
     if (!car) {
       throw new ApiError("Car with this id not found", 404);
     }
-
     return car;
   }
 
@@ -86,7 +93,7 @@ export class CarService {
       throw new ApiError("Car with this id not found", 404);
     }
     const rates = await currencyHelper.readFallbackRates();
-    car.allPrice = currencyHelper.convert(
+    car.allPrice = await currencyHelper.convert(
       car.defaultPrice,
       car.defaultCurrency,
       rates,
@@ -104,19 +111,21 @@ export class CarService {
 
   public async getCarByUserIdWithPrice(userId: string): Promise<ICar[]> {
     const cars = await carRepository.getCarByUserId(userId);
+
     if (!cars || cars.length === 0) {
       throw new ApiError("Cars not found", 404);
     }
     const rates = await currencyHelper.readFallbackRates();
-    const carsWithPrice = cars.map((car) => {
-      car.allPrice = currencyHelper.convert(
-        car.defaultPrice,
-        car.defaultCurrency,
-        rates,
-      );
-      return car;
-    });
-
+    const carsWithPrice = await Promise.all(
+      cars.map(async (car) => {
+        car.allPrice = await currencyHelper.convert(
+          car.defaultPrice,
+          car.defaultCurrency,
+          rates,
+        );
+        return car;
+      }),
+    );
     return carsWithPrice;
   }
 

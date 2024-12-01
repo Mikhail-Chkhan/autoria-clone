@@ -105,6 +105,44 @@ class CarRepository {
     await Car.deleteOne({ _id: carId });
     return { message: `Car with id ${carId} removed successfully` };
   }
+
+  public async getAveragePriceByRegion(
+    regionID: number,
+  ): Promise<Record<string, number>> {
+    const result = await Car.aggregate([
+      { $match: { regionID, isActive: true, isCarSold: false } },
+      { $unwind: "$allPrice" },
+      {
+        $group: {
+          _id: "$allPrice.ccy",
+          averagePrice: { $avg: "$allPrice.price" },
+        },
+      },
+    ]);
+    const averagePrices: Record<string, number> = {};
+    result.forEach((item) => {
+      averagePrices[item._id] = item.averagePrice;
+    });
+    return averagePrices;
+  }
+
+  public async getAveragePriceAllUkraine(): Promise<Record<string, number>> {
+    const result = await Car.aggregate([
+      { $match: { isActive: true, isCarSold: false } },
+      { $unwind: "$allPrice" },
+      {
+        $group: {
+          _id: "$allPrice.ccy",
+          averagePrice: { $avg: "$allPrice.price" },
+        },
+      },
+    ]);
+    const averagePrices: Record<string, number> = {};
+    result.forEach((item) => {
+      averagePrices[item._id] = item.averagePrice;
+    });
+    return averagePrices;
+  }
 }
 
 export const carRepository = new CarRepository();

@@ -282,9 +282,6 @@ class AuthService {
   public async changeRole(dto: IRoleChange): Promise<{ message: string }> {
     try {
       await userService.getUser(dto.userId);
-      // if (!user) {
-      //   throw new ApiError("User not found", 404);
-      // }
       await roleRepository.removeByUserId(dto.userId);
       await tokenRepository.deleteByParams({ _userId: dto.userId });
       const role = await roleService.create({

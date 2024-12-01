@@ -13,7 +13,6 @@ export const roleTemplates = {
     UserPermissions.CHANGE_EMAIL,
     UserPermissions.CHANGE_PASSWORD,
     UserPermissions.LOGOUT,
-    UserPermissions.DELETE_ACCOUNT,
   ],
   seller: [
     UserPermissions.VIEW_OWN_PROFILE,
@@ -23,7 +22,7 @@ export const roleTemplates = {
     UserPermissions.CHANGE_EMAIL,
     UserPermissions.CHANGE_PASSWORD,
     UserPermissions.LOGOUT,
-    UserPermissions.DELETE_ACCOUNT,
+    UserPermissions.REPORT,
 
     CarPermissions.CREATE_CAR,
     CarPermissions.UPDATE_CAR,
@@ -39,6 +38,7 @@ export const roleTemplates = {
     UserPermissions.CHANGE_EMAIL,
     UserPermissions.CHANGE_PASSWORD,
     UserPermissions.LOGOUT,
+    UserPermissions.REPORT,
     UserPermissions.DELETE_ACCOUNT,
 
     CarPermissions.CREATE_CAR,
@@ -64,6 +64,7 @@ export const roleTemplates = {
     UserPermissions.CHANGE_EMAIL,
     UserPermissions.CHANGE_PASSWORD,
     UserPermissions.LOGOUT,
+    UserPermissions.REPORT,
     UserPermissions.DELETE_ACCOUNT,
 
     CarPermissions.CREATE_CAR,

@@ -13,7 +13,6 @@ export const configs = {
   JWT_ACCESS_EXPIRATION: process.env.JWT_ACCESS_EXPIRATION,
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
   JWT_REFRESH_EXPIRATION: process.env.JWT_REFRESH_EXPIRATION,
-  JWT_MASTER_SECRET: process.env.JWT_MASTER_SECRET,
 
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
 
@@ -36,4 +35,8 @@ export const configs = {
   AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT,
 
   API_URL_PRIVAT_BANK: process.env.API_URL_PRIVAT_BANK,
+
+  REDIS_HOST: process.env.REDIS_HOST,
+  REDIS_PORT: process.env.REDIS_PORT,
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD,
 };

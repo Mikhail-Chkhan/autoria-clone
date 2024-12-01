@@ -12,6 +12,7 @@ import { adminRouter } from "./routers/admin.router";
 import { authRouter } from "./routers/auth.router";
 import { carRouter } from "./routers/car.router";
 import { catalogRouter } from "./routers/catalog.router";
+import { reportsRouter } from "./routers/report.router";
 import { userRouter } from "./routers/user.router";
 
 const app = express();
@@ -44,7 +45,7 @@ app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 app.use("/cars", carRouter);
-// app.use("/company", companyRouter);
+app.use("/reports", reportsRouter);
 app.use("/catalog", catalogRouter);
 
 app.use(

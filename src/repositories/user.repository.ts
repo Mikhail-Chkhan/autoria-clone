@@ -19,10 +19,6 @@ class UserRepository {
     };
     if (query.search) {
       filterObj.name = { $regex: query.search, $options: "i" };
-      // filterObj.$or = [
-      //   { name: { $regex: query.search, $options: "i" } },
-      //   { email: { $regex: query.search, $options: "i" } },
-      // ];
     }
 
     const sortObj: { [key: string]: SortOrder } = {};
@@ -39,7 +35,6 @@ class UserRepository {
       default:
         throw new ApiError("Invalid orderBy", 500);
     }
-    console.log(sortObj);
     const skip = query.limit * (query.page - 1);
     return await Promise.all([
       User.find(filterObj).sort(sortObj).limit(query.limit).skip(skip),

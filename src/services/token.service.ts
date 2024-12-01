@@ -43,7 +43,7 @@ class TokenService {
           secret = configs.ACTION_FORGOT_PASSWORD_SECRET;
           break;
       }
-      return jsonwebtoken.verify(token, secret) as ITokenPayload; //  возвращает ITokenPayload если токен валидный
+      return jsonwebtoken.verify(token, secret) as ITokenPayload;
     } catch (e) {
       console.error(e.message);
       throw new ApiError("Invalid token", 401);
@@ -51,7 +51,7 @@ class TokenService {
   }
 
   public generateActionTokens(
-    payload: ITokenActionPayload, // {userId: string;role: RoleEnum;}
+    payload: ITokenActionPayload,
     tokenType: ActionTokenTypeEnum,
   ): string {
     let secret: string;

@@ -4,6 +4,7 @@ import { UploadedFile } from "express-fileupload";
 import { ICar, ICarListQuery } from "../interfaces/car.interface";
 import { carPresenter } from "../presenters/car.presenter";
 import { carService } from "../services/car.service";
+import { reportService } from "../services/report.service";
 
 class CarController {
   public async create(req: Request, res: Response, next: NextFunction) {
@@ -44,6 +45,7 @@ class CarController {
     try {
       const carId = req.params.carId;
       const car = await carService.getCarWithPrice(carId);
+      await reportService.incrementViews(carId);
       const resault = await carPresenter.toPublicResDto(car);
       res.status(200).json(resault);
     } catch (e) {

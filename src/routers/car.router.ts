@@ -13,6 +13,12 @@ router.get(
   carMiddleware.isQueryValid(CarValidator.listQuery),
   carController.getListWithQueryParams,
 );
+router.get(
+  "/my",
+  authMiddleware.checkAccessToken(CarPermissions.GET_CARS),
+  carController.getMyCars,
+);
+router.get("/:carId", carController.getById);
 router.post(
   "/create",
   authMiddleware.checkAccessToken(CarPermissions.CREATE_CAR),
@@ -22,24 +28,20 @@ router.post(
 router.patch(
   "/:carId",
   authMiddleware.checkAccessToken(CarPermissions.UPDATE_CAR),
-
+  carMiddleware.checkCarIdAndOwner,
   carMiddleware.isBodyValid(CarValidator.update),
   carController.update,
 );
-router.get(
-  "/my",
-  authMiddleware.checkAccessToken(CarPermissions.GET_CARS),
-  carController.getMyCars,
-);
-router.get("/:carId", carController.getById);
 router.patch(
   "/sale/:carId",
   authMiddleware.checkAccessToken(CarPermissions.UPDATE_CAR),
+  carMiddleware.checkCarIdAndOwner,
   carController.carSold,
 );
 router.patch(
   "/deactivate/:carId",
   authMiddleware.checkAccessToken(CarPermissions.DEACTIVATE_CAR),
+  carMiddleware.checkCarIdAndOwner,
   carController.deactivate,
 );
 router.post(
