@@ -1,0 +1,1464 @@
+{
+  "info": {
+    "_postman_id": "59c2d127-5e29-40d7-8cce-09e30b3d9c68",
+    "name": "AutoRiaClone",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27556856",
+    "_collection_link": "https://misha9-0935.postman.co/workspace/Misha-Workspace~6538d294-a097-4b72-8ada-313187488a92/collection/27556856-59c2d127-5e29-40d7-8cce-09e30b3d9c68?action=share&source=collection_link&creator=27556856"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "send-verify-code",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"miha315+156@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/auth/send-verify-code",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "send-verify-code"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "verify-code",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"miha315@gmail.com\",\r\n    \"verifyCode\":\"111111111111\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/auth/verify-code",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "verify-code"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "sign-up",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Misha Chkhan\",\r\n    \"email\": \"miha315+3@gmail.com\",\r\n    \"password\": \"March!2024\",\r\n    \"regionId\": 5,\r\n    \"city\": \"City Name\",\r\n    \"phone\": \"+380662806981\",\r\n    \"verifyCode\": \"f29293a4\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/auth/sign-up",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "sign-up"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "sign-in",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"miha315+156@gmail.com\",\r\n    \"password\": \"March!2024\"\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/auth/sign-in",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "sign-in"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "refresh",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQzNzJiMmEzNjMyNzI3ZjRjNzU2NjUiLCJwZXJtaXNzaW9ucyI6WyJwZXJtaXNzaW9uXzEiLCJwZXJtaXNzaW9uXzIiLCJwZXJtaXNzaW9uXzMiLCJwZXJtaXNzaW9uXzQiLCJwZXJtaXNzaW9uXzUiXSwicm9sZXMiOlsiZGVmYXVsdCIsInNlbGxlciJdLCJjb21wYW55SWQiOm51bGwsImlhdCI6MTczMjQ3NDQyNiwiZXhwIjoxNzMzMzM4NDI2fQ.ZbW2k4KhZH7cO0idx6tXdRAO1Dajye-HIZ4jz74mXks",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/auth/refresh",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change-password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"oldPassword\": \"March!2024new\",\r\n    \"newPassword\": \"March!2024\"\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/auth/change-password",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "reset-password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"miha315+2@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/auth/reset-password",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "set-password",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"March!2024new5\",\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ1MGViMTQzNjY5MWQ0NzhiZTAwZTEiLCJyb2xlSWQiOiI2NzQ1MGViMjQzNjY5MWQ0NzhiZTAwZTQiLCJpYXQiOjE3MzI1Nzk4MDAsImV4cCI6MTczMzE4NDYwMH0.lTLfvfg7FA5if6IBm5RA6sZpWhN5u2OjqUeTTXyOgrc\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/auth/set-password",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "set-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/auth/logout",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logoutAll",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/auth/logout/all",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "logout",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update role template",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/auth/update-role-template",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "auth",
+                "update-role-template"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "car-advert",
+      "item": [
+        {
+          "name": "create car advert",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"brandId\": 3,\r\n    \"model\": \"aaaaaaaaaa\",\r\n    \"year\": 2002,\r\n    \"vin\": \"1G8AN15F07Z174257\",\r\n    \"fuelType\": \"diesel\",\r\n    \"type\": \"hatchback\",\r\n    \"engineCapacity\": 1.6,\r\n    \"stateNumber\": \"AA1234AA\",\r\n    \"distance\": 12349,\r\n    \"new\": false,\r\n    \"advertType\": \"privat\",\r\n    \"regionID\": 7,\r\n    \"city\": \"Donetsk\",\r\n    \"defaultPrice\": 10000,\r\n    \"defaultCurrency\": \"USD\"\r\n    // \"companyId\": \"companyId\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/cars/create",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "cars",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get cars with query params",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/cars?limit=3&page=1&brand=Renault&year=2000&fuelType=lpg&type=sedan&advertType=privat&regionID=5&new=false&order=desc&orderBy=year",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "cars"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "3"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "brand",
+                  "value": "Renault"
+                },
+                {
+                  "key": "year",
+                  "value": "2000"
+                },
+                {
+                  "key": "fuelType",
+                  "value": "lpg"
+                },
+                {
+                  "key": "type",
+                  "value": "sedan"
+                },
+                {
+                  "key": "advertType",
+                  "value": "privat"
+                },
+                {
+                  "key": "regionID",
+                  "value": "5"
+                },
+                {
+                  "key": "new",
+                  "value": "false"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                },
+                {
+                  "key": "orderBy",
+                  "value": "year"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get car by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/cars/6747ac28db53d3be78357982",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "cars",
+                "6747ac28db53d3be78357982"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get my cars",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/cars/my",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "cars",
+                "my"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "cars update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"brandId\": 5,\r\n    \"model\": \"model 1\",\r\n    \"year\": 2003,\r\n    \"vin\": \"1G8AN15F07Z174299\",\r\n    \"fuelType\": \"electric\",\r\n    \"type\": \"coupe\",\r\n    \"engineCapacity\": 1.6,\r\n    \"stateNumber\": \"AA1234AA\",\r\n    \"distance\": 12349,\r\n    \"new\": false,\r\n    \"regionID\": 7,\r\n    \"city\": \"Donetsk\",\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/cars/6747ac28db53d3be78357982",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "cars",
+                "6747ac28db53d3be78357982"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "sale car",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/cars/sale/6747ac28db53d3be78357982",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "cars",
+                "sale",
+                "6747ac28db53d3be78357982"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deactivate avert car",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/cars/deactivate/6747ac28db53d3be78357982",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "cars",
+                "deactivate",
+                "6747ac28db53d3be78357982"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload image",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "connection": true
+            }
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "img",
+                  "type": "file",
+                  "src": "/C:/Users/Admin/Desktop/Screenshot_24.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API_HOST}}/cars/upload-img/674b0b614ca75039cd4fb5a4",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "cars",
+                "upload-img",
+                "674b0b614ca75039cd4fb5a4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "remove image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/cars/remove-img/CAR/674b0b614ca75039cd4fb5a4/4c16465d-aaa3-439c-bbee-b0d26055306c.png",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "cars",
+                "remove-img",
+                "CAR",
+                "674b0b614ca75039cd4fb5a4",
+                "4c16465d-aaa3-439c-bbee-b0d26055306c.png"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "get user (public info)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/users/6744e12369c254ced43bfd41",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "users",
+                "6744e12369c254ced43bfd41"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get user (private info)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/users/me",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"name update 2\",\r\n    \"phone\": \"+380440000002\",\r\n    // \"regionId\": \"12\",\r\n    \"city\": \"new sity 2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/users/me",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "add logo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ0ZTEyMzY5YzI1NGNlZDQzYmZkNDEiLCJwZXJtaXNzaW9ucyI6WyJwZXJtaXNzaW9uXzEiLCJwZXJtaXNzaW9uXzIiLCJwZXJtaXNzaW9uXzMiLCJwZXJtaXNzaW9uXzQiLCJwZXJtaXNzaW9uXzUiXSwicm9sZXMiOlsiZGVmYXVsdCIsInNlbGxlciJdLCJjb21wYW55SWQiOm51bGwsImlhdCI6MTczMjU3MTE2MSwiZXhwIjoxNzMyNTcyOTYxfQ.NyW18mYCXhXCPGDe7oPdakz2aFvWqIBlwq7WB-bazLo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": "/C:/Users/Admin/Desktop/Screenshot_3.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API_HOST}}/users/logo",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "users",
+                "logo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "remove logo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/users/remove-logo",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "users",
+                "remove-logo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change email verify (send)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"miha315+1@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/users/change-email-verify",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "users",
+                "change-email-verify"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change email (set)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"miha315+1@gmail.com\",\r\n    \"verifyCode\":\"941dc212\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/users/change-email",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "users",
+                "change-email"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "admin",
+      "item": [
+        {
+          "name": "create admin user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Misha Chkhan\",\r\n    \"email\": \"miha315+4@gmail.com\",\r\n    \"password\": \"March!2024\",\r\n    \"regionId\": 5,\r\n    \"city\": \"City Name\",\r\n    \"phone\": \"+380662806981\",\r\n    \"secretKey\": \"f29293a4\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/admin/create-admin-user",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "create-admin-user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change role",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"67450eb1436691d478be00e1\",\r\n  \"role\": \"manager\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/admin/change-role",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "change-role"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update user (any params)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"qqqqqqqqqqqqqqqqq\",\r\n    \"phone\": \"+3804402323232\",\r\n    \"email\": \"m.ch.test@fdfd.sss\",\r\n    \"regionId\": \"1\",\r\n    \"city\": \"Kiev\",\r\n    \"accountType\": \"premium\",\r\n    // \"companyId\": null,\r\n    \"isBlocked\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/admin/user/67450eb14366911478be00e2",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "user",
+                "67450eb14366911478be00e2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get user by ID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{API_HOST}}/admin/get-user/67450ff576ec22941c9e6",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "get-user",
+                "67450ff576ec22941c9e6"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "user-list with search params",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/admin/user-list?orderBy=createdAt&order=desc&limit=5&page=1",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "user-list"
+              ],
+              "query": [
+                {
+                  "key": "orderBy",
+                  "value": "createdAt"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "remove user",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/admin/user/67450ff576ec22941c9e6",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "user",
+                "67450ff576ec22941c9e6"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change account type - premium",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/admin/change-acc-type-premium/67464c3f6feda52eed689dcb",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "change-acc-type-premium",
+                "67464c3f6feda52eed689dcb"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change account type - basic",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/admin/change-acc-type-basic/67464c3f6feda52eed689dcb",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "change-acc-type-basic",
+                "67464c3f6feda52eed689dcb"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update car (any params)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"brandId\": 5,\r\n    \"model\": \"model 1\",\r\n    \"year\": 2003,\r\n    \"vin\": \"1G8AN15F07Z174299\",\r\n    \"fuelType\": \"electric\",\r\n    \"type\": \"coupe\",\r\n    \"engineCapacity\": 1.6,\r\n    \"stateNumber\": \"AA1234AA\",\r\n    \"distance\": 12349,\r\n    \"new\": false,\r\n    \"regionID\": 7,\r\n    \"city\": \"Donetsk\",\r\n    \"isActive\":false,\r\n    \"isCarSold\":true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_HOST}}/admin/car/6747ac28db53d3be78357982",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "car",
+                "6747ac28db53d3be78357982"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "remove car",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/admin/car/6747ac28db53d3be78357982",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "car",
+                "6747ac28db53d3be78357982"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload car image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "img",
+                  "type": "file",
+                  "src": "/C:/Users/Admin/Desktop/Screenshot_7.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API_HOST}}/admin/upload-car-img/674b0b614ca75039cd4fb5a4",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "upload-car-img",
+                "674b0b614ca75039cd4fb5a4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "remove car image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/admin/remove-car-img/car/674b0b614ca75039cd4fb5a4/2a8891bc-4015-4cde-80b8-e8c3f7c3d041.png",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "remove-car-img",
+                "car",
+                "674b0b614ca75039cd4fb5a4",
+                "2a8891bc-4015-4cde-80b8-e8c3f7c3d041.png"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "blocked user",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/admin/blocked-user/674b934d1bcf2358677c2de0",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "admin",
+                "blocked-user",
+                "674b934d1bcf2358677c2de0"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "catalog",
+      "item": [
+        {
+          "name": "get region",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/catalog/region",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "catalog",
+                "region"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get brand",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/catalog/brand",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "catalog",
+                "brand"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "reports",
+      "item": [
+        {
+          "name": "get report-stats by carId",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/reports/674c743eb41cd3ef5d5ed48e/stats",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "reports",
+                "674c743eb41cd3ef5d5ed48e",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get report average-price by regionId",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/reports/average-price/region/6",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "reports",
+                "average-price",
+                "region",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get report average-price by Ukraine",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_HOST}}/reports//average-price/national",
+              "host": [
+                "{{API_HOST}}"
+              ],
+              "path": [
+                "reports",
+                "",
+                "average-price",
+                "national"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
